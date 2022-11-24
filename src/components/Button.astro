@@ -1,0 +1,27 @@
+---
+export interface Props {
+  buttonId: string;
+  text: string;
+	loadFullURL?: boolean;
+}
+const { buttonId, text } = Astro.props;
+
+---
+<button id={buttonId}>{text}</button>
+<script>
+import { OPTIONS, starFlow, runCompare } from "../lib/utils";
+  
+  document.getElementById('loadProdFile').addEventListener('click', ()=> {
+    console.log('loadProdFile')
+    starFlow(OPTIONS.PROD_SITE, 'siteId');
+  });
+  document.getElementById('loadFullUrl').addEventListener('click', ()=> {
+    console.log('loadFullUrl')
+    starFlow(OPTIONS.FULL_URL, 'urlSiteId');
+  });
+
+  document.getElementById('runCompare').addEventListener('click', ()=> {
+    console.log('runCompare')
+    runCompare();
+  });
+</script>
