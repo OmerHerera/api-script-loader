@@ -1,4 +1,6 @@
 
+import cloneDeep from 'lodash.clonedeep';
+
 export const OPTIONS = {
   FULL_URL: 0,
   PROD_SITE: 1  
@@ -49,6 +51,8 @@ function isDeepEqual(object1: any, object2: any) {
       try {
         value1DecodeURI = decodeURIComponent(value1);
         value2DecodeURI = decodeURIComponent(value2);
+        // value1DecodeURI = value1;
+        // value2DecodeURI = value2;
         if (value1DecodeURI !== value2DecodeURI) {
           console.log(`1. Returning false, key: ${key}`);
           console.log(`DYExps    value: ${JSON.stringify(value1)}`);
@@ -81,16 +85,15 @@ function isDeepEqual(object1: any, object2: any) {
 }
 
 function cloneDYExps() {
-  window.DYExpsApi  = Object.assign({}, window.DYExps);
-  console.log('Cloned to DYExpsApi Object');
+  window.DYExpsApi = cloneDeep(window.DYExps);
+  window.DYExps = null;
+  // delete window.DYExps;
+  // window.DYExpsApi  = Object.assign({}, window.DYExps);
+  // console.log('Cloned to DYExpsApi Object');
 }
 
-function loadFile(src: string) {
-  console.log('Loading Objects . . .');
-  let myScript = document.createElement('script');
-  myScript.setAttribute('src', src);
-  myScript.onload = ()=>{
-    console.log('Loading . . .');
+function runPopulateSelect() { 
+  console.log('Onload fired . . .');
     const select = document.getElementById('dyObject');
     const arr = Object.keys(DYExps);
     for (const [index, a] of arr.entries()) {
@@ -104,7 +107,13 @@ function loadFile(src: string) {
     opt.value = 'all';
     opt.innerHTML = 'all';
     select.appendChild(opt);
-  }
+}
+
+function loadFile(src: string, populateSelect: boolean = false) {
+  console.log('Loading Objects . . .');
+  let myScript = document.createElement('script');
+  myScript.setAttribute('src', src);
+  myScript.onload = populateSelect ? runPopulateSelect : cloneDYExps;
   document.body.appendChild(myScript);
   
 }
@@ -145,7 +154,7 @@ export function starFlow(option: number, id: string) {
   if(value) {
     switch (option) {
       case OPTIONS.PROD_SITE:
-        loadFile(`https://cdn.dynamicyield.com/api/${value}/api_dynamic.js`);
+        loadFile(`https://cdn.dynamicyield.com/api/${value}/api_dynamic.js`, true);
         break;
       case OPTIONS.FULL_URL:
         loadFile(value);
