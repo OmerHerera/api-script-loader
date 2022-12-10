@@ -10,16 +10,16 @@ const { buttonId, text } = Astro.props;
 <script>
 import { OPTIONS, starFlow, runCompare } from "../lib/utils";
   
-  document.getElementById('loadProdFile').addEventListener('click', ()=> {
+  document.getElementById('loadProdFile')?.addEventListener('click', ()=> {
     console.log('loadProdFile')
     starFlow(OPTIONS.PROD_SITE, 'siteId');
   });
-  document.getElementById('loadFullUrl').addEventListener('click', ()=> {
+  document.getElementById('loadFullUrl')?.addEventListener('click', ()=> {
     console.log('loadFullUrl')
     starFlow(OPTIONS.FULL_URL, 'urlSiteId');
   });
 
-  document.getElementById('runCompare').addEventListener('click', ()=> {
+  document.getElementById('runCompare')?.addEventListener('click', ()=> {
     console.log('runCompare')
     runCompare();
   });

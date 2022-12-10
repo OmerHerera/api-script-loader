@@ -7,8 +7,8 @@ export const OPTIONS = {
 };
 
 function getValue(id: string) {
-  const el = document.getElementById(id);
-  return el.value || '';
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  return el?.value || '';
 }
 
 function isObject(object: any) {
@@ -16,8 +16,8 @@ function isObject(object: any) {
 }
 function isDeepEqual(object1: any, object2: any) {
   if ((typeof object1 === 'string' && typeof object2 === 'string') && (object2 !== object1)) {
-    console.log(`DYExps    value: ${object1}`);
-    console.log(`DYExpsApi value: ${object2}`);
+    console.log(`window.DYExps    value: ${object1}`);
+    console.log(`window.DYExpsApi value: ${object2}`);
     return false;
   }
   if ((typeof object1 === 'string' && typeof object2 === 'string') && (object2 === object1)) {
@@ -55,12 +55,12 @@ function isDeepEqual(object1: any, object2: any) {
         // value2DecodeURI = value2;
         if (value1DecodeURI !== value2DecodeURI) {
           console.log(`1. Returning false, key: ${key}`);
-          console.log(`DYExps    value: ${JSON.stringify(value1)}`);
-          console.log(`DYExpsApi value: ${JSON.stringify(value2)}`);
+          console.log(`window.DYExps    value: ${JSON.stringify(value1)}`);
+          console.log(`window.DYExpsApi value: ${JSON.stringify(value2)}`);
           return false;
         }
       } catch (e) {
-        console.log(`e: ${e} DYExps value: ${value1} DYExpsApi value: ${value2}`)
+        console.log(`e: ${e} window.DYExps value: ${value1} window.DYExpsApi value: ${value2}`)
       }
     }
     if (!isObjects && value1 !== value2) {
@@ -70,14 +70,14 @@ function isDeepEqual(object1: any, object2: any) {
         value1DecodeURI = decodeURIComponent(value1);
         value2DecodeURI = decodeURIComponent(value2);
         if (value1DecodeURI !== value2DecodeURI) {
-          console.log(`!isObjects && DYExps !== DYExpsApi`);
+          console.log(`!isObjects && window.DYExps !== window.DYExpsApi`);
           console.log(`2. Returning false, key: ${key}`);
-          console.log(`DYExps    decodeURI: ${value1DecodeURI}`);
-          console.log(`DYExpsApi decodeURI: ${value2DecodeURI}`);
+          console.log(`window.DYExps    decodeURI: ${value1DecodeURI}`);
+          console.log(`window.DYExpsApi decodeURI: ${value2DecodeURI}`);
           return false;
         }
       } catch (e) {
-        console.log(`e: ${e} DYExps: ${value1} DYExpsApi: ${value2} key: ${key}`)
+        console.log(`e: ${e} window.DYExps: ${value1} window.DYExpsApi: ${value2} key: ${key}`)
       }
     }
   }
@@ -87,26 +87,24 @@ function isDeepEqual(object1: any, object2: any) {
 function cloneDYExps() {
   window.DYExpsApi = cloneDeep(window.DYExps);
   window.DYExps = null;
-  // delete window.DYExps;
-  // window.DYExpsApi  = Object.assign({}, window.DYExps);
-  // console.log('Cloned to DYExpsApi Object');
+  console.log('Cloned to DYExpsApi Object');
 }
 
 function runPopulateSelect() { 
   console.log('Onload fired . . .');
-    const select = document.getElementById('dyObject');
-    const arr = Object.keys(DYExps);
+    const select = document.getElementById('dyObject') as HTMLSelectElement | null ;
+    const arr = Object.keys(window.DYExps);
     for (const [index, a] of arr.entries()) {
       const opt = document.createElement('option');
-      opt.value = index;
+      opt.value = index.toString();
       opt.innerHTML = a;
-      select.appendChild(opt);
+      select?.appendChild(opt);
     }
     // option all
     const opt = document.createElement('option');
     opt.value = 'all';
     opt.innerHTML = 'all';
-    select.appendChild(opt);
+    select?.appendChild(opt);
 }
 
 function loadFile(src: string, populateSelect: boolean = false) {
@@ -119,38 +117,39 @@ function loadFile(src: string, populateSelect: boolean = false) {
 }
 
 export function runCompare() {
-  const select = document.getElementById('dyObject');
-  var text = select.options[select.selectedIndex].text;
+  const select = document.getElementById('dyObject') as HTMLSelectElement | null;
+  var text = select?.options[select.selectedIndex].text;
   console.log(`Running runCompare with option ${text} . . .`);
   if (text === 'all') {
-    const keys = Object.keys(DYExps);
+    const keys = Object.keys(window.DYExps);
     for (var key of keys) {
       console.log(`************************************************************`);
       console.log(`Checking key: ${key}`);
       // smartTags
       if (key === 'otags') {
-        const otagsKeys = Object.keys(DYExps['otags']);
+        const otagsKeys = Object.keys(window.DYExps['otags']);
         for (var cKey of otagsKeys) {
           console.log(`Smart Tag key: ${cKey}`);
-          isDeepEqual(DYExps['otags'][cKey], DYExpsApi['otags'][cKey]);
+          isDeepEqual(window.DYExps['otags'][cKey], window.DYExpsApi['otags'][cKey]);
         }
       }
       else {
-        isDeepEqual(DYExps[key], DYExpsApi[key]);
+        isDeepEqual(window.DYExps[key], window.DYExpsApi[key]);
       }
     }
   } else {
-    const otherKeys = Object.keys(DYExps[text]);
+    const otherKeys = Object.keys(window.DYExps[text]);
     for (var oKey of otherKeys) {
       console.log(`************************************************************`);
       console.log(`Checking key: ${oKey}`); 
-      isDeepEqual(DYExps[text][oKey], DYExpsApi[text][oKey]);
+      isDeepEqual(window.DYExps[text][oKey], window.DYExpsApi[text][oKey]);
     }
   }
 }
 
 export function starFlow(option: number, id: string) {
   const value = getValue(id);
+  console.log(value);
   if(value) {
     switch (option) {
       case OPTIONS.PROD_SITE:
@@ -158,7 +157,7 @@ export function starFlow(option: number, id: string) {
         break;
       case OPTIONS.FULL_URL:
         loadFile(value);
-        // cloneDYExps();
+        // clonewindow.DYExps();
         break;
       default:
         break;
