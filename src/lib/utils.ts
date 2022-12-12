@@ -30,9 +30,9 @@ function isDeepEqual(object1: any, object2: any) {
   if (objKeys1.length !== objKeys2.length) {
     return false;
   }
-  for (var key of objKeys1) {
-    const value1 = object1[key];
-    const value2 = object2[key];
+  for (let key of objKeys1) {
+    let value1 = object1[key];
+    let value2 = object2[key];
     const isObjects = isObject(value1) && isObject(value2);
 
     // original
@@ -49,14 +49,16 @@ function isDeepEqual(object1: any, object2: any) {
       let value1DecodeURI;
       let value2DecodeURI;
       try {
-        value1DecodeURI = decodeURIComponent(value1);
-        value2DecodeURI = decodeURIComponent(value2);
-        // value1DecodeURI = value1;
-        // value2DecodeURI = value2;
+        value1DecodeURI = decodeURIComponent(value1)
+        value2DecodeURI = decodeURIComponent(value2)
+        if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode') {
+          value1DecodeURI = value1DecodeURI.replace(/'/g, "'");
+        }
+        
         if (value1DecodeURI !== value2DecodeURI) {
-          console.log(`1. Returning false, key: ${key}`);
-          console.log(`window.DYExps    value: ${JSON.stringify(value1)}`);
-          console.log(`window.DYExpsApi value: ${JSON.stringify(value2)}`);
+          console.log(`\n1. Returning false, key: ${key}`);
+          console.log(`\n window.DYExps    value:\n ${JSON.stringify(value1)}`);
+          console.log(`\n window.DYExpsApi value:\n ${JSON.stringify(value2)}`);
           return false;
         }
       } catch (e) {
@@ -67,13 +69,16 @@ function isDeepEqual(object1: any, object2: any) {
       let value1DecodeURI;
       let value2DecodeURI;
       try {
-        value1DecodeURI = decodeURIComponent(value1);
-        value2DecodeURI = decodeURIComponent(value2);
+        value1DecodeURI = decodeURIComponent(value1)
+        value2DecodeURI = decodeURIComponent(value2)
+        if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode') {
+          value1DecodeURI = value1DecodeURI.replace(/'/g, '"');
+        }
         if (value1DecodeURI !== value2DecodeURI) {
-          console.log(`!isObjects && window.DYExps !== window.DYExpsApi`);
-          console.log(`2. Returning false, key: ${key}`);
-          console.log(`window.DYExps    decodeURI: ${value1DecodeURI}`);
-          console.log(`window.DYExpsApi decodeURI: ${value2DecodeURI}`);
+          console.log(`\n !isObjects && window.DYExps !== window.DYExpsApi`);
+          console.log(`\n 2. Returning false, key: ${key}\n`);
+          console.log(`\n window.DYExps    decodeURI:\n ${value1DecodeURI}`);
+          console.log(`\n window.DYExpsApi decodeURI:\n ${value2DecodeURI}`);
           return false;
         }
       } catch (e) {
@@ -118,17 +123,17 @@ function loadFile(src: string, populateSelect: boolean = false) {
 
 export function runCompare() {
   const select = document.getElementById('dyObject') as HTMLSelectElement | null;
-  var text = select?.options[select.selectedIndex].text;
+  let text = select?.options[select.selectedIndex].text;
   console.log(`Running runCompare with option ${text} . . .`);
   if (text === 'all') {
     const keys = Object.keys(window.DYExps);
-    for (var key of keys) {
+    for (let key of keys) {
       console.log(`************************************************************`);
       console.log(`Checking key: ${key}`);
       // smartTags
       if (key === 'otags') {
         const otagsKeys = Object.keys(window.DYExps['otags']);
-        for (var cKey of otagsKeys) {
+        for (let cKey of otagsKeys) {
           console.log(`Smart Tag key: ${cKey}`);
           isDeepEqual(window.DYExps['otags'][cKey], window.DYExpsApi['otags'][cKey]);
         }
@@ -139,7 +144,7 @@ export function runCompare() {
     }
   } else {
     const otherKeys = Object.keys(window.DYExps[text]);
-    for (var oKey of otherKeys) {
+    for (let oKey of otherKeys) {
       console.log(`************************************************************`);
       console.log(`Checking key: ${oKey}`); 
       isDeepEqual(window.DYExps[text][oKey], window.DYExpsApi[text][oKey]);

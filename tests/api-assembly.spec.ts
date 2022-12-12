@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 
 
 test('homepage has title and links to intro page', async ({ page }) => {
+  const siteId = '8778079';
   await page.goto('http://localhost:3000/');
   page.on('console', msg => console.log(msg.text()))
   // page.on('console', msg => {
@@ -10,10 +11,13 @@ test('homepage has title and links to intro page', async ({ page }) => {
   // });
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/Welcome to Api-Assembly Scripts Loaders Tester/);
-  await page.locator('[placeholder="Insert URL Api-Assembly Result"]').fill('https://cdn.dynamicyield.com/api/8773879/api_dynamic_full.js');
+
+  await page.locator('[placeholder="Insert URL Api-Assembly Result"]').fill(`8778079_1670848814006_full.js`);
   await page.locator('text=Click to load file').click();
-  await page.locator('[placeholder="Insert SiteId"]').fill('8773879');
+  
+  await page.locator('[placeholder="Insert SiteId"]').fill(siteId);
   await page.locator('text=Click to load prod file').click();
+
   await page.locator('select[name="dyObject"]').selectOption({ label: 'otags' });
   await page.locator('text=Run to Compare').click();
 
