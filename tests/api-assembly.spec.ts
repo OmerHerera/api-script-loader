@@ -5,56 +5,65 @@ function isObject(object: any) {
 }
 
 function isDeepEqual(object1: any, object2: any) {
-
   if ((typeof object1 === 'string' && typeof object2 === 'string') && (object2 !== object1)) {
-    console.log('Comparing Strings . . .');
-    console.log(`window.DYExps    value: ${object1}`);
-    console.log(`window.DYExpsApi value: ${object2}`);
-    expect(object1).toEqual(object1);
+    // console.log(`\nValues are Strings
+    //                window.DYExps    value: ${object1}
+    //                window.DYExpsApi value: ${object2}`);
+    expect(object2).toBe(object1);
     return false;
   }
-
   if ((typeof object1 === 'string' && typeof object2 === 'string') && (object2 === object1)) {
     return true;
   }
 
   const objKeys1 = Object.keys(object1);
   const objKeys2 = Object.keys(object2);
-
   if (objKeys1.length !== objKeys2.length) {
     return false;
   }
-
   for (let key of objKeys1) {
     let value1 = object1[key];
     let value2 = object2[key];
     const isObjects = isObject(value1) && isObject(value2);
     if ((isObjects && !isDeepEqual(value1, value2))) {
-        return false;
+      let value1DecodeURI;
+      let value2DecodeURI;
+      try {
+        value1DecodeURI = decodeURIComponent(value1)
+        value2DecodeURI = decodeURIComponent(value2)
+        if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode') {
+          value1DecodeURI = value1DecodeURI.replace(/'/g, "'");
+        }
+
+        if (value1DecodeURI !== value2DecodeURI) {
+          console.log(`\nValues not Equals when comparing Objects in key: ${key}`);
+          expect(value2DecodeURI).toContain(value1DecodeURI);
+          return false;
+        }
+      } catch (e) {
+        console.log(`e: ${e} \n*window.DYExps value\n: ${JSON.stringify(value1)} \n*window.DYExpsApi value\n: ${JSON.stringify(value2)}`)
+      }
     }
     if (!isObjects && value1 !== value2) {
       let value1DecodeURI;
       let value2DecodeURI;
-      value1DecodeURI = decodeURIComponent(value1);
-      value2DecodeURI = decodeURIComponent(value2);
-      if(key == 'id') {
-        return true;
+      try {
+        value1DecodeURI = decodeURIComponent(value1)
+        value2DecodeURI = decodeURIComponent(value2)
+        if(key == 'id') {
+          return true;
+        }
+        if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode' || key === 'name') {
+          value1DecodeURI = value1DecodeURI.replace(/'/g, '"');
+        }
+        if (value1DecodeURI !== value2DecodeURI) {
+          console.log(`\nValues not Equals when comparing Values in key: ${key}`);
+          expect(value2DecodeURI).toBe(value1DecodeURI);
+          return false;
+        }
+      } catch (e) {
+        console.log(`e: ${e}`)
       }
-      if (key === 'cssCode' ||
-          key === 'jsCode' ||
-          key === 'htmlCode' ||
-          key === 'name'
-      ) {
-        value1DecodeURI = value1DecodeURI.replace(/'/g, '"');
-      }
-      if (key !== 'jsCode' && value2DecodeURI !== value1DecodeURI) {
-      // if (key !== 'jsCode' && key !== 'selectParameter') {
-        console.log(`Not equal Key: ${key}`);
-        console.log(`\n DYExps: ${value1DecodeURI}`);
-        console.log(`\n DYExpsApi: ${value2DecodeURI}`);
-        expect(value2DecodeURI).toEqual(value1DecodeURI);
-      }
-      return false;
     }
   }
   return true;
@@ -72,7 +81,7 @@ function isDeepEqual(object1: any, object2: any) {
 
 test('DYExps vs DYExpsApi', async ({ page }) => {
   const siteId = '8767964';
-  await page.goto('http://localhost:3000/');
+  await page.goto('https://api-script-loader-j19klf5vw-omher.vercel.app/');
   page.on('console', msg => console.log(msg.text()));
   // await expect(page).toHaveTitle(/Welcome to Api-Assembly Scripts Loaders Tester/);
 
@@ -93,30 +102,28 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
     console.log(`Smart Tag key: ${cKey}`);
     isDeepEqual(DYExps['otags'][cKey], DYExpsApi['otags'][cKey]);
   }
-  //isDeepEqual(DYExps, DYExpsApi);
-  console.log('Done');
-  //await page.locator('input:right-of(:text("Username"))').fill('value');
-  // var siteIdEl = await page.evaluate(
-  //   // () => document?.getElementById('siteId')?.innerText
-  //   () => document?.getElementById('siteId').value
-  // );
-  // var loadProdFileEl = await page.evaluate(
-  //   // () => document?.getElementById('siteId')?.innerText
-  //   () => document?.getElementById('loadProdFile').value
-  // );
+});
+test.skip('DYExps vs DYExpsApi Hosts', async ({ page }) => {
+  const keyToCheck = 'hosts';
+  const siteId = '8767964';
+  await page.goto('https://api-script-loader-j19klf5vw-omher.vercel.app/');
+  page.on('console', msg => console.log(msg.text()));
 
-  // loadProdFileEl.click();
-  // await expect(siteIdEl).toBeDefined();
+  await page.locator('[placeholder="Insert URL Api-Assembly Result"]').fill(`8767964_1671356854487_full.js`);
+  await page.locator('text=Click to load file').click();
 
-  // // create a locator
-  // const getStarted = page.getByRole('link', { name: 'Get started' });
+  await page.locator('[placeholder="Insert SiteId"]').fill(siteId);
+  await page.locator('text=Click to load prod file').click();
 
-  // // Expect an attribute "to be strictly equal" to the value.
-  // await expect(getStarted).toHaveAttribute('href', '/docs/intro');
+  await page.locator('select[name="dyObject"]').selectOption({ label: keyToCheck });
 
-  // // Click the get started link.
-  // await getStarted.click();
+  const DYExps = await page.evaluate('window.DYExps');
+  const DYExpsApi = await page.evaluate('window.DYExpsApi');
+  const otagsKeys = Object.keys(DYExps[keyToCheck]);
+  for (let cKey of otagsKeys) {
+    console.log('================================================================================');
+    console.log(`Checking Key: ${cKey}`);
+    isDeepEqual(DYExps[keyToCheck][cKey], DYExpsApi[keyToCheck][cKey]);
+  }
 
-  // // Expects the URL to contain intro.
-  // await expect(page).toHaveURL(/.*intro/);
 });
