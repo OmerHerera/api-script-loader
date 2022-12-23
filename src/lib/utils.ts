@@ -34,17 +34,6 @@ function isDeepEqual(object1: any, object2: any) {
     let value1 = object1[key];
     let value2 = object2[key];
     const isObjects = isObject(value1) && isObject(value2);
-
-    // original
-    // if ((isObjects && !isDeepEqual(value1, value2)) || (!isObjects && value1 !== value2)) {
-    //   const value1DecodeURI = decodeURI(value1);
-    //   const value2DecodeURI = decodeURI(value2);
-    //   console.log(`object1 decodeURI: ${value1DecodeURI}`);
-    //   console.log(`object2 decodeURI: ${value2DecodeURI}`);
-    //   if(value1DecodeURI !== value2DecodeURI) {
-    //     return false;
-    //   }
-    // }
     if ((isObjects && !isDeepEqual(value1, value2))) {
       let value1DecodeURI;
       let value2DecodeURI;
@@ -118,7 +107,18 @@ function loadFile(src: string, populateSelect: boolean = false) {
   myScript.setAttribute('src', src);
   myScript.onload = populateSelect ? runPopulateSelect : cloneDYExps;
   document.body.appendChild(myScript);
-  
+}
+
+function loadFilePromise(src: string) {
+  return new Promise<void>((resolve, reject) => {
+    console.log('Loading Objects . . .');
+    let myScript = document.createElement('script');
+    myScript.setAttribute('src', src);
+    myScript.onload = () => { 
+      resolve();
+    };
+    document.body.appendChild(myScript);
+  });
 }
 
 export function runCompare() {
@@ -152,17 +152,16 @@ export function runCompare() {
   }
 }
 
-export function starFlow(option: number, id: string) {
+export function starFlow(option: number, id: string, populate?: boolean) {
   const value = getValue(id);
   console.log(value);
   if(value) {
     switch (option) {
       case OPTIONS.PROD_SITE:
-        loadFile(`https://cdn.dynamicyield.com/api/${value}/api_dynamic.js`, true);
+        loadFile(`https://cdn.dynamicyield.com/api/${value}/api_dynamic.js`, populate);
         break;
       case OPTIONS.FULL_URL:
         loadFile(value);
-        // clonewindow.DYExps();
         break;
       default:
         break;
@@ -170,4 +169,29 @@ export function starFlow(option: number, id: string) {
     } else {
       console.error(`No: Data`);
   }
+}
+
+export function runFullFlow() {
+  const pathFullFlow = getValue('pathFullFlow');
+  const siteIdFullFlow = pathFullFlow.split('_')[0]
+  const pathProductionFile = `https://cdn.dynamicyield.com/api/${siteIdFullFlow}/api_dynamic.js`
+
+  const loadApiAssemblyFile = loadFilePromise(pathFullFlow);
+  const loadProductionFile = loadFilePromise(pathProductionFile);
+  
+  loadApiAssemblyFile
+    .then(() => {
+      console.log('Api Assembly File Loaded');
+      cloneDYExps();
+      loadProductionFile
+        .then(() => {
+          console.log('Production File Loaded');
+          const otagsKeys = Object.keys(window.DYExps['otags']);
+          for (let cKey of otagsKeys) {
+            console.log(`************************************************************`);
+            console.log(`Smart Tag key: ${cKey}`);
+            isDeepEqual(window.DYExps['otags'][cKey], window.DYExpsApi['otags'][cKey]);
+          }
+        })
+    })
 }
