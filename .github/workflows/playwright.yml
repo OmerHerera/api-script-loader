@@ -21,7 +21,7 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      if: ${{ !github.event.client_payload.siteId }}
+      if: ${{ github.event.client_payload.siteId }}
       run: npx playwright test ${{ github.event.client_payload.siteId }}
     - uses: actions/upload-artifact@v3
       if: always()
