@@ -8,7 +8,7 @@ on:
     types:
       - webhook
 jobs:
-  test:
+  DYExps_vs_DYExpsApi:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
