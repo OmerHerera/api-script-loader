@@ -3,7 +3,7 @@ import cloneDeep from 'lodash.clonedeep';
 
 export const OPTIONS = {
   FULL_URL: 0,
-  PROD_SITE: 1  
+  PROD_SITE: 1
 };
 
 function getValue(id: string) {
@@ -23,7 +23,7 @@ function isDeepEqual(object1: any, object2: any) {
   if ((typeof object1 === 'string' && typeof object2 === 'string') && (object2 === object1)) {
     return true;
   }
-  
+
 
   const objKeys1 = Object.keys(object1);
   const objKeys2 = Object.keys(object2);
@@ -43,7 +43,7 @@ function isDeepEqual(object1: any, object2: any) {
         if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode') {
           value1DecodeURI = value1DecodeURI.replace(/'/g, "'");
         }
-        
+
         if (value1DecodeURI !== value2DecodeURI) {
           console.log(`\n1. Returning false, key: ${key}`);
           console.log(`\n window.DYExps    value:\n ${JSON.stringify(value1)}`);
@@ -79,13 +79,15 @@ function isDeepEqual(object1: any, object2: any) {
 }
 
 function cloneDYExps() {
+  console.log('Onload fired(cloneDYExps)');
+  console.log('Cloning to DYExps . . .');
   window.DYExpsApi = cloneDeep(window.DYExps);
   window.DYExps = null;
   console.log('Cloned to DYExpsApi Object');
 }
 
-function runPopulateSelect() { 
-  console.log('Onload fired . . .');
+function runPopulateSelect() {
+  console.log('Onload fired(runPopulateSelect)');
     const select = document.getElementById('dyObject') as HTMLSelectElement | null ;
     const arr = Object.keys(window.DYExps);
     for (const [index, a] of arr.entries()) {
@@ -103,6 +105,7 @@ function runPopulateSelect() {
 
 function loadFile(src: string, populateSelect: boolean = false) {
   console.log('Loading Objects . . .');
+  console.log(`From File: ${src}`);
   let myScript = document.createElement('script');
   myScript.setAttribute('src', src);
   myScript.onload = populateSelect ? runPopulateSelect : cloneDYExps;
@@ -114,7 +117,7 @@ function loadFilePromise(src: string) {
     console.log('Loading Objects . . .');
     let myScript = document.createElement('script');
     myScript.setAttribute('src', src);
-    myScript.onload = () => { 
+    myScript.onload = () => {
       resolve();
     };
     document.body.appendChild(myScript);
@@ -146,7 +149,7 @@ export function runCompare() {
     const otherKeys = Object.keys(window.DYExps[text]);
     for (let oKey of otherKeys) {
       console.log(`************************************************************`);
-      console.log(`Checking key: ${oKey}`); 
+      console.log(`Checking key: ${oKey}`);
       isDeepEqual(window.DYExps[text][oKey], window.DYExpsApi[text][oKey]);
     }
   }
@@ -154,7 +157,6 @@ export function runCompare() {
 
 export function starFlow(option: number, id: string, populate?: boolean) {
   const value = getValue(id);
-  console.log(value);
   if(value) {
     switch (option) {
       case OPTIONS.PROD_SITE:
@@ -178,7 +180,7 @@ export function runFullFlow() {
 
   const loadApiAssemblyFile = loadFilePromise(pathFullFlow);
   const loadProductionFile = loadFilePromise(pathProductionFile);
-  
+
   loadApiAssemblyFile
     .then(() => {
       console.log('Api Assembly File Loaded');

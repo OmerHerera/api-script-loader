@@ -80,12 +80,16 @@ function isDeepEqual(object1: any, object2: any) {
 // });
 
 test('DYExps vs DYExpsApi', async ({ page }) => {
-  const siteId = '8767964';
-  await page.goto('https://api-script-loader-j19klf5vw-omher.vercel.app/');
+  const URL = process.env.URL || 'https://api-script-loader-j19klf5vw-omher.vercel.app/';
+  const CDN = process.env.CDN || 'https://cdn-dev.dynamicyield.com/api-dev/'
+  const FILE_NAME = process.env.FILE_NAME || 'api_dynamic_full.js'
+  const siteId = process.env.SITE_ID || '';
+  const apiAssemblyFilePath = `${CDN}${siteId}/${FILE_NAME}`
+  console.log('================================================================================================');
+  console.log(`Running Test for SiteId: ${siteId} in server: ${URL} and file created by Api-Assembly: ${apiAssemblyFilePath}`);
+  await page.goto(URL);
   page.on('console', msg => console.log(msg.text()));
-  // await expect(page).toHaveTitle(/Welcome to Api-Assembly Scripts Loaders Tester/);
-
-  await page.locator('[placeholder="Insert URL Api-Assembly Result"]').fill(`8767964_1671356854487_full.js`);
+  await page.locator('[placeholder="Insert URL Api-Assembly Result"]').fill(apiAssemblyFilePath);
   await page.locator('text=Click to load file').click();
 
   await page.locator('[placeholder="Insert SiteId"]').fill(siteId);
@@ -103,27 +107,27 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
     isDeepEqual(DYExps['otags'][cKey], DYExpsApi['otags'][cKey]);
   }
 });
-test.skip('DYExps vs DYExpsApi Hosts', async ({ page }) => {
-  const keyToCheck = 'hosts';
-  const siteId = '8767964';
-  await page.goto('https://api-script-loader-j19klf5vw-omher.vercel.app/');
-  page.on('console', msg => console.log(msg.text()));
-
-  await page.locator('[placeholder="Insert URL Api-Assembly Result"]').fill(`8767964_1671356854487_full.js`);
-  await page.locator('text=Click to load file').click();
-
-  await page.locator('[placeholder="Insert SiteId"]').fill(siteId);
-  await page.locator('text=Click to load prod file').click();
-
-  await page.locator('select[name="dyObject"]').selectOption({ label: keyToCheck });
-
-  const DYExps = await page.evaluate('window.DYExps');
-  const DYExpsApi = await page.evaluate('window.DYExpsApi');
-  const otagsKeys = Object.keys(DYExps[keyToCheck]);
-  for (let cKey of otagsKeys) {
-    console.log('================================================================================');
-    console.log(`Checking Key: ${cKey}`);
-    isDeepEqual(DYExps[keyToCheck][cKey], DYExpsApi[keyToCheck][cKey]);
-  }
-
-});
+// test.skip('DYExps vs DYExpsApi Hosts', async ({ page }) => {
+//   const keyToCheck = 'hosts';
+//   const siteId = '8767964';
+//   await page.goto('https://api-script-loader-j19klf5vw-omher.vercel.app/');
+//   page.on('console', msg => console.log(msg.text()));
+//
+//   await page.locator('[placeholder="Insert URL Api-Assembly Result"]').fill(`8767964_1671356854487_full.js`);
+//   await page.locator('text=Click to load file').click();
+//
+//   await page.locator('[placeholder="Insert SiteId"]').fill(siteId);
+//   await page.locator('text=Click to load prod file').click();
+//
+//   await page.locator('select[name="dyObject"]').selectOption({ label: keyToCheck });
+//
+//   const DYExps = await page.evaluate('window.DYExps');
+//   const DYExpsApi = await page.evaluate('window.DYExpsApi');
+//   const otagsKeys = Object.keys(DYExps[keyToCheck]);
+//   for (let cKey of otagsKeys) {
+//     console.log('================================================================================');
+//     console.log(`Checking Key: ${cKey}`);
+//     isDeepEqual(DYExps[keyToCheck][cKey], DYExpsApi[keyToCheck][cKey]);
+//   }
+//
+// });

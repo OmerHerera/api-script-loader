@@ -11,13 +11,13 @@ const { buttonId, text } = Astro.props;
 <script>
 
 import { OPTIONS, starFlow, runCompare, runFullFlow } from "../lib/utils";
-  
+
   document.getElementById('loadProdFile')?.addEventListener('click', ()=> {
     console.log('loadProdFile')
     starFlow(OPTIONS.PROD_SITE, 'siteId', true);
   });
   document.getElementById('loadFullUrl')?.addEventListener('click', ()=> {
-    console.log('loadFullUrl')
+    console.log('loadFullUrl');
     starFlow(OPTIONS.FULL_URL, 'urlSiteId', false);
   });
 
