@@ -20,7 +20,7 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Run Playwright DYExps vs DYExpsApi
+    - name: DYExps vs DYExpsApi siteID-> ${{ github.event.client_payload.siteId }}
       if: ${{ github.event.client_payload.siteId }}
       run: SITE_ID=${{ github.event.client_payload.siteId }} URL=${{ github.event.client_payload.url }}  npx playwright test --project=chromium
     - uses: actions/upload-artifact@v3
