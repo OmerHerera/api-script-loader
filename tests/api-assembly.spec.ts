@@ -80,7 +80,7 @@ function isDeepEqual(object1: any, object2: any) {
 // });
 
 test('DYExps vs DYExpsApi', async ({ page }) => {
-  const URL = process.env.URL || 'https://api-script-loader-j19klf5vw-omher.vercel.app/';
+  const URL = process.env.URL || 'https://api-script-loader.vercel.app/';
   const CDN = process.env.CDN || 'https://cdn-dev.dynamicyield.com/api-dev/'
   const FILE_NAME = process.env.FILE_NAME || 'api_dynamic_full.js'
   const siteId = process.env.SITE_ID || '';
