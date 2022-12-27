@@ -175,8 +175,6 @@ export function runFullFlow() {
   const siteIdFullFlow = pathFullFlow.split('_')[0]
   const pathProductionFile = `https://cdn.dynamicyield.com/api/${siteIdFullFlow}/api_dynamic.js`
 
-  const apiAssemblyFilePath = `${CDN}${siteId}/${FILE_NAME}`
-
   const loadApiAssemblyFile = loadFilePromise(pathFullFlow);
   const loadProductionFile = loadFilePromise(pathProductionFile);
 
@@ -188,11 +186,13 @@ export function runFullFlow() {
         .then(() => {
           console.log('Production File Loaded');
           const otagsKeys = Object.keys(window.DYExps['otags']);
+          console.log(`🚧 Checking ${Object.keys(window.DYExps['otags']).length} SmartTags`);
           for (let cKey of otagsKeys) {
             console.log('⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞');
             console.log(`🚀 Smart Tag key: ${cKey}`);
             isDeepEqual(window.DYExps['otags'][cKey], window.DYExpsApi['otags'][cKey]);
           }
+          console.log(`✅ Done Checking ${Object.keys(window.DYExps['otags']).length} SmartTags`);
         })
     })
 }

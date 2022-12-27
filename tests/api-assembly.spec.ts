@@ -6,8 +6,12 @@ function isObject(object: any) {
 
 function isDeepEqual(object1: any, object2: any) {
   if ((typeof object1 === 'string' && typeof object2 === 'string') && (object2 !== object1)) {
-    expect(object2).toBe(object1);
-    return false;
+    try {
+      expect(object2).toBe(object1);
+      return false;
+    } catch (e) {
+      console.log(`e: ${e} DYExps value: ${object1} DYExpsApi value: ${object2}`)
+    }
   }
   if ((typeof object1 === 'string' && typeof object2 === 'string') && (object2 === object1)) {
     return true;
@@ -81,9 +85,11 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
   const CDN = process.env.CDN || 'https://cdn-dev.dynamicyield.com/api-dev/'
   const FILE_NAME = process.env.FILE_NAME || 'api_dynamic_full.js'
   const siteId = process.env.SITE_ID || '';
+  const comparingKey = process.env.COMPARING_KEY || 'otags';
   const apiAssemblyFilePath = `${CDN}${siteId}/${FILE_NAME}`
-  console.log('⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞');
-  console.log(`Running Test for SiteId: ${siteId} in server: ${URL}\nand file created by Api-Assembly: ${apiAssemblyFilePath}`);
+  console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ');
+  console.log(`Running Test for SiteId: ${siteId} in server: ${URL}\nfile created by Api-Assembly: ${apiAssemblyFilePath} and comparingKey: ${comparingKey}`);
+  console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ');
   await page.goto(URL);
   page.on('console', msg => console.log(msg.text()));
   await page.locator('[placeholder="Insert URL Api-Assembly Result"]').fill(apiAssemblyFilePath);
@@ -92,16 +98,39 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
   await page.locator('[placeholder="Insert SiteId"]').fill(siteId);
   await page.locator('text=Click to load prod file').click();
 
-  await page.locator('select[name="dyObject"]').selectOption({ label: 'otags' });
+  await page.locator('select[name="dyObject"]').selectOption({ label: comparingKey });
   //await page.locator('text=Run to Compare').click();
 
   const DYExps = await page.evaluate('window.DYExps');
   const DYExpsApi = await page.evaluate('window.DYExpsApi');
-  const otagsKeys = Object.keys(DYExps['otags']);
-  for (let cKey of otagsKeys) {
-    console.log('⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞');
-    console.log(`🚀 Smart Tag key: ${cKey}`);
-    isDeepEqual(DYExps['otags'][cKey], DYExpsApi['otags'][cKey]);
+
+  if (comparingKey === 'all') {
+    const keys = Object.keys(DYExps);
+    console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps).length}`);
+    for (let key of keys) {
+      console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
+      console.log(`Checking key: ${key}`);
+      // smartTags
+      if (key === 'otags') {
+        const otagsKeys = Object.keys(DYExps['otags']);
+        for (let cKey of otagsKeys) {
+          console.log(`🚀 Smart Tag key: ${cKey}`);
+          isDeepEqual(DYExps['otags'][cKey], DYExpsApi['otags'][cKey]);
+        }
+      } else {
+        isDeepEqual(DYExps[key], DYExpsApi[key]);
+      }
+    }
+    console.log(`✅  Done Checking ${Object.keys(DYExps).length} keys`);
+  } else {
+    console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps[comparingKey]).length}`);
+    const otherKeys = Object.keys(DYExps[comparingKey]);
+    for (let oKey of otherKeys) {
+      console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
+      console.log(`Checking key: ${oKey}`);
+      isDeepEqual(DYExps[comparingKey][oKey], DYExpsApi[comparingKey][oKey]);
+    }
+    console.log(`✅  Done Checking ${Object.keys(DYExps[comparingKey]).length} keys`);
   }
 });
 // test.skip('DYExps vs DYExpsApi Hosts', async ({ page }) => {
