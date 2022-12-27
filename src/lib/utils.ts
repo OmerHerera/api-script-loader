@@ -79,7 +79,6 @@ function isDeepEqual(object1: any, object2: any) {
 }
 
 function cloneDYExps() {
-  console.log('Onload fired(cloneDYExps)');
   console.log('Cloning to DYExps . . .');
   window.DYExpsApi = cloneDeep(window.DYExps);
   window.DYExps = null;
@@ -87,7 +86,6 @@ function cloneDYExps() {
 }
 
 function runPopulateSelect() {
-  console.log('Onload fired(runPopulateSelect)');
     const select = document.getElementById('dyObject') as HTMLSelectElement | null ;
     const arr = Object.keys(window.DYExps);
     for (const [index, a] of arr.entries()) {
@@ -104,8 +102,7 @@ function runPopulateSelect() {
 }
 
 function loadFile(src: string, populateSelect: boolean = false) {
-  console.log('Loading Objects . . .');
-  console.log(`From File: ${src}`);
+  console.log(`Loading Objects, from file: ${src}`);
   let myScript = document.createElement('script');
   myScript.setAttribute('src', src);
   myScript.onload = populateSelect ? runPopulateSelect : cloneDYExps;
@@ -114,7 +111,7 @@ function loadFile(src: string, populateSelect: boolean = false) {
 
 function loadFilePromise(src: string) {
   return new Promise<void>((resolve, reject) => {
-    console.log('Loading Objects . . .');
+    console.log(`Loading Objects, from file: ${src}`);
     let myScript = document.createElement('script');
     myScript.setAttribute('src', src);
     myScript.onload = () => {
@@ -131,13 +128,13 @@ export function runCompare() {
   if (text === 'all') {
     const keys = Object.keys(window.DYExps);
     for (let key of keys) {
-      console.log(`************************************************************`);
+      console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
       console.log(`Checking key: ${key}`);
       // smartTags
       if (key === 'otags') {
         const otagsKeys = Object.keys(window.DYExps['otags']);
         for (let cKey of otagsKeys) {
-          console.log(`Smart Tag key: ${cKey}`);
+          console.log(`🚀 Smart Tag key: ${cKey}`);
           isDeepEqual(window.DYExps['otags'][cKey], window.DYExpsApi['otags'][cKey]);
         }
       }
@@ -148,7 +145,7 @@ export function runCompare() {
   } else {
     const otherKeys = Object.keys(window.DYExps[text]);
     for (let oKey of otherKeys) {
-      console.log(`************************************************************`);
+      console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
       console.log(`Checking key: ${oKey}`);
       isDeepEqual(window.DYExps[text][oKey], window.DYExpsApi[text][oKey]);
     }
@@ -178,6 +175,8 @@ export function runFullFlow() {
   const siteIdFullFlow = pathFullFlow.split('_')[0]
   const pathProductionFile = `https://cdn.dynamicyield.com/api/${siteIdFullFlow}/api_dynamic.js`
 
+  const apiAssemblyFilePath = `${CDN}${siteId}/${FILE_NAME}`
+
   const loadApiAssemblyFile = loadFilePromise(pathFullFlow);
   const loadProductionFile = loadFilePromise(pathProductionFile);
 
@@ -190,8 +189,8 @@ export function runFullFlow() {
           console.log('Production File Loaded');
           const otagsKeys = Object.keys(window.DYExps['otags']);
           for (let cKey of otagsKeys) {
-            console.log(`************************************************************`);
-            console.log(`Smart Tag key: ${cKey}`);
+            console.log('⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞');
+            console.log(`🚀 Smart Tag key: ${cKey}`);
             isDeepEqual(window.DYExps['otags'][cKey], window.DYExpsApi['otags'][cKey]);
           }
         })

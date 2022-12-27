@@ -6,9 +6,6 @@ function isObject(object: any) {
 
 function isDeepEqual(object1: any, object2: any) {
   if ((typeof object1 === 'string' && typeof object2 === 'string') && (object2 !== object1)) {
-    // console.log(`\nValues are Strings
-    //                window.DYExps    value: ${object1}
-    //                window.DYExpsApi value: ${object2}`);
     expect(object2).toBe(object1);
     return false;
   }
@@ -36,7 +33,7 @@ function isDeepEqual(object1: any, object2: any) {
         }
 
         if (value1DecodeURI !== value2DecodeURI) {
-          console.log(`\nValues not Equals when comparing Objects in key: ${key}`);
+          console.log(`\n🔴 Values not Equals when comparing Objects in key: ${key}`);
           expect(value2DecodeURI).toContain(value1DecodeURI);
           return false;
         }
@@ -57,7 +54,7 @@ function isDeepEqual(object1: any, object2: any) {
           value1DecodeURI = value1DecodeURI.replace(/'/g, '"');
         }
         if (value1DecodeURI !== value2DecodeURI) {
-          console.log(`\nValues not Equals when comparing Values in key: ${key}`);
+          console.log(`\n🔴 Values not Equals when comparing Values in key: ${key}`);
           expect(value2DecodeURI).toBe(value1DecodeURI);
           return false;
         }
@@ -85,8 +82,8 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
   const FILE_NAME = process.env.FILE_NAME || 'api_dynamic_full.js'
   const siteId = process.env.SITE_ID || '';
   const apiAssemblyFilePath = `${CDN}${siteId}/${FILE_NAME}`
-  console.log('================================================================================================');
-  console.log(`Running Test for SiteId: ${siteId} in server: ${URL} and file created by Api-Assembly: ${apiAssemblyFilePath}`);
+  console.log('⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞');
+  console.log(`Running Test for SiteId: ${siteId} in server: ${URL}\nand file created by Api-Assembly: ${apiAssemblyFilePath}`);
   await page.goto(URL);
   page.on('console', msg => console.log(msg.text()));
   await page.locator('[placeholder="Insert URL Api-Assembly Result"]').fill(apiAssemblyFilePath);
@@ -102,8 +99,8 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
   const DYExpsApi = await page.evaluate('window.DYExpsApi');
   const otagsKeys = Object.keys(DYExps['otags']);
   for (let cKey of otagsKeys) {
-    console.log('================================================================================');
-    console.log(`Smart Tag key: ${cKey}`);
+    console.log('⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞');
+    console.log(`🚀 Smart Tag key: ${cKey}`);
     isDeepEqual(DYExps['otags'][cKey], DYExpsApi['otags'][cKey]);
   }
 });
