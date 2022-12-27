@@ -51,7 +51,7 @@ function isDeepEqual(object1: any, object2: any) {
           return false;
         }
       } catch (e) {
-        console.log(`e: ${e} window.DYExps value: ${value1} window.DYExpsApi value: ${value2}`)
+        console.log(`e: ${e} \nwindow.DYExps value: ${value1} \nwindow.DYExpsApi value: ${value2}`)
       }
     }
     if (!isObjects && value1 !== value2) {
@@ -82,6 +82,9 @@ function cloneDYExps() {
   console.log('Cloning to DYExps . . .');
   window.DYExpsApi = cloneDeep(window.DYExps);
   window.DYExps = null;
+  const el = document.getElementById('clone') as HTMLInputElement | null;
+  // @ts-ignore: Object is possibly 'null'.
+  el.style.display = ""
   console.log('Cloned to DYExpsApi Object');
 }
 
@@ -129,7 +132,7 @@ export function runCompare() {
     const keys = Object.keys(window.DYExps);
     for (let key of keys) {
       console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
-      console.log(`Checking key: ${key}`);
+      console.log(`🚀 Checking key: ${key}`);
       // smartTags
       if (key === 'otags') {
         const otagsKeys = Object.keys(window.DYExps['otags']);
@@ -146,7 +149,7 @@ export function runCompare() {
     const otherKeys = Object.keys(window.DYExps[text]);
     for (let oKey of otherKeys) {
       console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
-      console.log(`Checking key: ${oKey}`);
+      console.log(`🚀 Checking key: ${oKey}`);
       isDeepEqual(window.DYExps[text][oKey], window.DYExpsApi[text][oKey]);
     }
   }

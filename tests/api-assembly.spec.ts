@@ -10,7 +10,7 @@ function isDeepEqual(object1: any, object2: any) {
       expect(object2).toBe(object1);
       return false;
     } catch (e) {
-      console.log(`e: ${e} DYExps value: ${object1} DYExpsApi value: ${object2}`)
+      console.log(`e: ${e} \nDYExps value: ${object1} \nDYExpsApi value: ${object2}`)
     }
   }
   if ((typeof object1 === 'string' && typeof object2 === 'string') && (object2 === object1)) {
@@ -38,6 +38,8 @@ function isDeepEqual(object1: any, object2: any) {
 
         if (value1DecodeURI !== value2DecodeURI) {
           console.log(`\n🔴 Values not Equals when comparing Objects in key: ${key}`);
+          console.log(`\n🔴 window.DYExpsApi: ${JSON.stringify(value2)}`);
+          console.log(`\n🔴 window.DYExps:    ${JSON.stringify(value1)}`);
           expect(value2DecodeURI).toContain(value1DecodeURI);
           return false;
         }
@@ -54,9 +56,9 @@ function isDeepEqual(object1: any, object2: any) {
         if(key == 'id') {
           return true;
         }
-        if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode' || key === 'name') {
-          value1DecodeURI = value1DecodeURI.replace(/'/g, '"');
-        }
+//        if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode' || key === 'name') {
+//          value2DecodeURI = value1DecodeURI.replace(/'/g, '"');
+//        }
         if (value1DecodeURI !== value2DecodeURI) {
           console.log(`\n🔴 Values not Equals when comparing Values in key: ${key}`);
           expect(value2DecodeURI).toBe(value1DecodeURI);
@@ -72,13 +74,14 @@ function isDeepEqual(object1: any, object2: any) {
 
 
 // test('Run Full Flow', async ({ page }) => {
+//   console.log('Run Full Flow') 
 //   await page.goto('http://localhost:3000/');
-//   page.on('console', msg => console.log(msg.text()));
-//   await page.locator('[placeholder="Insert Path file Api-Assembly Result"]').fill(`8767964_1671356854487_full.js`);
-//   await page.locator('text=Click to run Full Flow').click();
-//   const t = await page.evaluate('window.DYExps.section');
-//   console.log(t)
-// });
+//    page.on('console', msg => console.log(msg.text()));
+//   await page.locator('[placeholder="Cloned"]').fill('🧬');
+// //   await page.locator('text=Click to run Full Flow').click();
+// //   const t = await page.evaluate('window.DYExps.section');
+// //   console.log(t)
+//  });
 
 test('DYExps vs DYExpsApi', async ({ page }) => {
   const URL = process.env.URL || 'https://api-script-loader.vercel.app/';
@@ -94,7 +97,10 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
   page.on('console', msg => console.log(msg.text()));
   await page.locator('[placeholder="Insert URL Api-Assembly Result"]').fill(apiAssemblyFilePath);
   await page.locator('text=Click to load file').click();
-
+  // This is trick for waiting to th clone action
+  console.log('⏳ Waiting for cloning to be finish')
+  await page.locator('[placeholder="Cloned"]').fill('🧬');
+  
   await page.locator('[placeholder="Insert SiteId"]').fill(siteId);
   await page.locator('text=Click to load prod file').click();
 
@@ -109,7 +115,7 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
     console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps).length}`);
     for (let key of keys) {
       console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
-      console.log(`Checking key: ${key}`);
+      console.log(`🚀 Checking key: ${key}`);
       // smartTags
       if (key === 'otags') {
         const otagsKeys = Object.keys(DYExps['otags']);
@@ -127,7 +133,7 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
     const otherKeys = Object.keys(DYExps[comparingKey]);
     for (let oKey of otherKeys) {
       console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
-      console.log(`Checking key: ${oKey}`);
+      console.log(`🚀 Checking key: ${oKey}`);
       if(DYExpsApi[comparingKey] && DYExpsApi[comparingKey][oKey]) {
         isDeepEqual(DYExps[comparingKey][oKey], DYExpsApi[comparingKey][oKey]);
       }
@@ -138,27 +144,3 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
     console.log(`✅  Done Checking ${Object.keys(DYExps[comparingKey]).length} keys`);
   }
 });
-// test.skip('DYExps vs DYExpsApi Hosts', async ({ page }) => {
-//   const keyToCheck = 'hosts';
-//   const siteId = '8767964';
-//   await page.goto('https://api-script-loader-j19klf5vw-omher.vercel.app/');
-//   page.on('console', msg => console.log(msg.text()));
-//
-//   await page.locator('[placeholder="Insert URL Api-Assembly Result"]').fill(`8767964_1671356854487_full.js`);
-//   await page.locator('text=Click to load file').click();
-//
-//   await page.locator('[placeholder="Insert SiteId"]').fill(siteId);
-//   await page.locator('text=Click to load prod file').click();
-//
-//   await page.locator('select[name="dyObject"]').selectOption({ label: keyToCheck });
-//
-//   const DYExps = await page.evaluate('window.DYExps');
-//   const DYExpsApi = await page.evaluate('window.DYExpsApi');
-//   const otagsKeys = Object.keys(DYExps[keyToCheck]);
-//   for (let cKey of otagsKeys) {
-//     console.log('================================================================================');
-//     console.log(`Checking Key: ${cKey}`);
-//     isDeepEqual(DYExps[keyToCheck][cKey], DYExpsApi[keyToCheck][cKey]);
-//   }
-//
-// });
