@@ -128,7 +128,12 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
     for (let oKey of otherKeys) {
       console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
       console.log(`Checking key: ${oKey}`);
-      isDeepEqual(DYExps[comparingKey][oKey], DYExpsApi[comparingKey][oKey]);
+      if(DYExpsApi[comparingKey] && DYExpsApi[comparingKey][oKey]) {
+        isDeepEqual(DYExps[comparingKey][oKey], DYExpsApi[comparingKey][oKey]);
+      }
+      else {
+        console.log(`🔴 Key: ${oKey}, doesn't  exist in DYExpsApi`);
+      }
     }
     console.log(`✅  Done Checking ${Object.keys(DYExps[comparingKey]).length} keys`);
   }
