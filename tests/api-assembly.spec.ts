@@ -56,9 +56,9 @@ function isDeepEqual(object1: any, object2: any) {
         if(key == 'id') {
           return true;
         }
-//        if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode' || key === 'name') {
-//          value2DecodeURI = value1DecodeURI.replace(/'/g, '"');
-//        }
+        if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode' || key === 'name') {
+          value1DecodeURI = value1DecodeURI.replace(/'/g, '"');
+        }
         if (value1DecodeURI !== value2DecodeURI) {
           console.log(`\n🔴 Values not Equals when comparing Values in key: ${key}`);
           expect(value2DecodeURI).toBe(value1DecodeURI);
@@ -74,7 +74,7 @@ function isDeepEqual(object1: any, object2: any) {
 
 
 // test('Run Full Flow', async ({ page }) => {
-//   console.log('Run Full Flow') 
+//   console.log('Run Full Flow')
 //   await page.goto('http://localhost:3000/');
 //    page.on('console', msg => console.log(msg.text()));
 //   await page.locator('[placeholder="Cloned"]').fill('🧬');
@@ -87,7 +87,7 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
   const URL = process.env.URL || 'https://api-script-loader.vercel.app/';
   const CDN = process.env.CDN || 'https://cdn-dev.dynamicyield.com/api-dev/'
   const FILE_NAME = process.env.FILE_NAME || 'api_dynamic_full.js'
-  const siteId = process.env.SITE_ID || '';
+  const siteId = process.env.SITE_ID || '8778079';
   const comparingKey = process.env.COMPARING_KEY || 'otags';
   const apiAssemblyFilePath = `${CDN}${siteId}/${FILE_NAME}`
   console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ');
@@ -100,7 +100,7 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
   // This is trick for waiting to th clone action
   console.log('⏳ Waiting for cloning to be finish')
   await page.locator('[placeholder="Cloned"]').fill('🧬');
-  
+
   await page.locator('[placeholder="Insert SiteId"]').fill(siteId);
   await page.locator('text=Click to load prod file').click();
 
