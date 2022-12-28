@@ -22,7 +22,7 @@ jobs:
       run: npx playwright install --with-deps
     - name: DYExps vs DYExpsApi siteID-> ${{ github.event.client_payload.siteId }}
       if: ${{ github.event.client_payload.siteId }}
-      run: SITE_ID=${{ github.event.client_payload.siteId }} URL=${{ github.event.client_payload.url }} COMPARING_KEY=${{ github.event.client_payload.comparingKey }}  npx playwright test --project=chromium
+      run: SITE_ID=${{ github.event.client_payload.siteId }} URL=${{ github.event.client_payload.url }} COMPARING_KEY=${{ github.event.client_payload.comparingKey }} SMART_TAG_ID=${{ github.event.client_payload.smartTagId }}  npx playwright test --project=chromium
     - uses: actions/upload-artifact@v3
       if: always()
       with:

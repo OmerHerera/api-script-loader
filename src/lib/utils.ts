@@ -79,13 +79,13 @@ function isDeepEqual(object1: any, object2: any) {
 }
 
 function cloneDYExps() {
-  console.log('Cloning to DYExps . . .');
+  console.log('🧬 Cloning to DYExps . . .');
   window.DYExpsApi = cloneDeep(window.DYExps);
   window.DYExps = null;
   const el = document.getElementById('clone') as HTMLInputElement | null;
   // @ts-ignore: Object is possibly 'null'.
   el.style.display = ""
-  console.log('Cloned to DYExpsApi Object');
+  console.log('✅ Cloned to DYExpsApi Object');
 }
 
 function runPopulateSelect() {
@@ -105,7 +105,7 @@ function runPopulateSelect() {
 }
 
 function loadFile(src: string, populateSelect: boolean = false) {
-  console.log(`Loading Objects, from file: ${src}`);
+  console.log(`⏱️  Loading Objects, from file: ${src}`);
   let myScript = document.createElement('script');
   myScript.setAttribute('src', src);
   myScript.onload = populateSelect ? runPopulateSelect : cloneDYExps;
@@ -114,7 +114,7 @@ function loadFile(src: string, populateSelect: boolean = false) {
 
 function loadFilePromise(src: string) {
   return new Promise<void>((resolve, reject) => {
-    console.log(`Loading Objects, from file: ${src}`);
+    console.log(`⏱️  Loading Objects, from file: ${src}`);
     let myScript = document.createElement('script');
     myScript.setAttribute('src', src);
     myScript.onload = () => {

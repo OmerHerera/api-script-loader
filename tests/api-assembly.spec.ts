@@ -89,6 +89,7 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
   const FILE_NAME = process.env.FILE_NAME || 'api_dynamic_full.js'
   const siteId = process.env.SITE_ID || '8778079';
   const comparingKey = process.env.COMPARING_KEY || 'otags';
+  const smartTagId = process.env.SMART_TAG_ID || '';
   const apiAssemblyFilePath = `${CDN}${siteId}/${FILE_NAME}`
   console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ');
   console.log(`Running Test for SiteId: ${siteId} in server: ${URL}\nfile created by Api-Assembly: ${apiAssemblyFilePath} and comparingKey: ${comparingKey}`);
@@ -129,18 +130,26 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
     }
     console.log(`✅  Done Checking ${Object.keys(DYExps).length} keys`);
   } else {
-    console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps[comparingKey]).length}`);
-    const otherKeys = Object.keys(DYExps[comparingKey]);
-    for (let oKey of otherKeys) {
-      console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
-      console.log(`🚀 Checking key: ${oKey}`);
-      if(DYExpsApi[comparingKey] && DYExpsApi[comparingKey][oKey]) {
-        isDeepEqual(DYExps[comparingKey][oKey], DYExpsApi[comparingKey][oKey]);
+    if(smartTagId) {
+      console.log(`🚧 Checking otags key with smartTagId: ${smartTagId}`);
+      if (DYExpsApi['otags'] && DYExpsApi['otags'][smartTagId]) {
+        isDeepEqual(DYExps['otags'][smartTagId], DYExpsApi['otags'][smartTagId]);
+      } else {
+        console.log(`🔴 SmartTag: ${smartTagId}, doesn't  exist in DYExpsApi`);
       }
-      else {
-        console.log(`🔴 Key: ${oKey}, doesn't  exist in DYExpsApi`);
+    } else {
+      console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps[comparingKey]).length}`);
+      const otherKeys = Object.keys(DYExps[comparingKey]);
+      for (let oKey of otherKeys) {
+        console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
+        console.log(`🚀 Checking key: ${oKey}`);
+        if (DYExpsApi[comparingKey] && DYExpsApi[comparingKey][oKey]) {
+          isDeepEqual(DYExps[comparingKey][oKey], DYExpsApi[comparingKey][oKey]);
+        } else {
+          console.log(`🔴 Key: ${oKey}, doesn't  exist in DYExpsApi`);
+        }
       }
+      console.log(`✅  Done Checking ${Object.keys(DYExps[comparingKey]).length} keys`);
     }
-    console.log(`✅  Done Checking ${Object.keys(DYExps[comparingKey]).length} keys`);
   }
 });
