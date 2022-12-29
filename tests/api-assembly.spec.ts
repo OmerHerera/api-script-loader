@@ -83,6 +83,13 @@ function isDeepEqual(object1: any, object2: any) {
 // //   console.log(t)
 //  });
 
+function printDYObj(obj: any, DYExps: string, smartTagId: string) {
+  console.error(`====================================================================== ${DYExps} === ${smartTagId}======================================================================================================================`);
+  for(const [key,value] of Object.entries(obj)) {
+    console.log(`  \x1B[36m${key}: \x1b[0m${JSON.stringify(value)}`)
+  }
+
+}
 test('DYExps vs DYExpsApi', async ({ page }) => {
   const URL = process.env.URL || 'https://api-script-loader.vercel.app/';
   const CDN = process.env.CDN || 'https://cdn-dev.dynamicyield.com/api-dev/'
@@ -90,6 +97,7 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
   const siteId = process.env.SITE_ID || '8778079';
   const comparingKey = process.env.COMPARING_KEY || 'otags';
   const smartTagId = process.env.SMART_TAG_ID || '';
+  const logSmartTagObject = process.env.LOG_SMART_TAG_OBJ || false;
   const apiAssemblyFilePath = `${CDN}${siteId}/${FILE_NAME}`
   console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ');
   console.log(`Running Test for SiteId: ${siteId} in server: ${URL}\nfile created by Api-Assembly: ${apiAssemblyFilePath} and comparingKey: ${comparingKey}`);
@@ -134,6 +142,10 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
       console.log(`🚧 Checking otags key with smartTagId: ${smartTagId}`);
       if (DYExpsApi['otags'] && DYExpsApi['otags'][smartTagId]) {
         isDeepEqual(DYExps['otags'][smartTagId], DYExpsApi['otags'][smartTagId]);
+        if(logSmartTagObject) {
+          printDYObj(DYExps['otags'][smartTagId], 'DYExps', smartTagId);
+          printDYObj(DYExpsApi['otags'][smartTagId], 'DYExpsApi', smartTagId);
+        }
       } else {
         console.log(`🔴 SmartTag: ${smartTagId}, doesn't  exist in DYExpsApi`);
       }
