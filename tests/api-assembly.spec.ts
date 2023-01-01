@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import {runHookConfigSetup} from "astro/dist/integrations";
 
 function isObject(object: any) {
   return object != null && typeof object === "object";
@@ -101,10 +102,15 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
   const URL = process.env.URL || 'https://api-script-loader.vercel.app/';
   const CDN = process.env.CDN || 'https://cdn-dev.dynamicyield.com/api-dev/'
   const FILE_NAME = process.env.FILE_NAME || 'api_dynamic_full.js'
-  const siteId = process.env.SITE_ID || '8778079';
+  const siteId = process.env.SITE_ID || '';
   const comparingKey = process.env.COMPARING_KEY || 'otags';
   const smartTagId = process.env.SMART_TAG_ID || '';
   const logSmartTagObject = process.env.LOG_SMART_TAG_OBJ || false;
+
+  if(!siteId) {
+    console.error(`⛔ ⛔ ⛔ No site ID, Do Nothing ⛔ ⛔ ⛔`);
+    return;
+  }
   const apiAssemblyFilePath = `${CDN}${siteId}/${FILE_NAME}`
   console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ');
   console.log(`Running Test for SiteId: \x1B[36m${siteId}\x1b[0m in server: \x1B[36m${URL}\x1b[0m\nfile created by Api-Assembly: \x1B[36m${apiAssemblyFilePath}\x1b[0m and comparingKey: \x1B[36m${comparingKey}\x1b[0m`);
