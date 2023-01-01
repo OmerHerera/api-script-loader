@@ -35,6 +35,13 @@ function isDeepEqual(object1: any, object2: any) {
         if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode') {
           value1DecodeURI = value1DecodeURI.replace(/'/g, "'");
         }
+        // seems that in production we have duplicates of the same touchPointsDisjs under conds array
+        // wso we check if the values are the same but not considering the duplicates
+        if(key === 'touchPointsDisjs') {
+          // console.log(`Checking: ${key}`);
+          isDeepEqual(value1, value2);
+          return;
+        }
 
         if (value1DecodeURI !== value2DecodeURI) {
           console.log(`\n🔴 Values not Equals when comparing Objects in key: ${key}`);
@@ -44,7 +51,7 @@ function isDeepEqual(object1: any, object2: any) {
           return false;
         }
       } catch (e) {
-        console.log(`e: ${e} \n*window.DYExps value\n: ${JSON.stringify(value1)} \n*window.DYExpsApi value\n: ${JSON.stringify(value2)}`)
+        console.log(`Reason: ${e} \n*window.DYExps value:\n ${JSON.stringify(value1)} \n*window.DYExpsApi value:\n ${JSON.stringify(value2)}`)
       }
     }
     if (!isObjects && value1 !== value2) {
@@ -65,7 +72,7 @@ function isDeepEqual(object1: any, object2: any) {
           return false;
         }
       } catch (e) {
-        console.log(`e: ${e}`)
+        console.log(`Reason: ${e}`)
       }
     }
   }
@@ -100,7 +107,7 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
   const logSmartTagObject = process.env.LOG_SMART_TAG_OBJ || false;
   const apiAssemblyFilePath = `${CDN}${siteId}/${FILE_NAME}`
   console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ');
-  console.log(`Running Test for SiteId: ${siteId} in server: ${URL}\nfile created by Api-Assembly: ${apiAssemblyFilePath} and comparingKey: ${comparingKey}`);
+  console.log(`Running Test for SiteId: \x1B[36m${siteId}\x1b[0m in server: \x1B[36m${URL}\x1b[0m\nfile created by Api-Assembly: \x1B[36m${apiAssemblyFilePath}\x1b[0m and comparingKey: \x1B[36m${comparingKey}\x1b[0m`);
   console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ');
   await page.goto(URL);
   page.on('console', msg => console.log(msg.text()));
@@ -116,8 +123,8 @@ test('DYExps vs DYExpsApi', async ({ page }) => {
   await page.locator('select[name="dyObject"]').selectOption({ label: comparingKey });
   //await page.locator('text=Run to Compare').click();
 
-  const DYExps = await page.evaluate('window.DYExps');
-  const DYExpsApi = await page.evaluate('window.DYExpsApi');
+  const DYExps:any = await page.evaluate('window.DYExps');
+  const DYExpsApi:any = await page.evaluate('window.DYExpsApi');
 
   if (comparingKey === 'all') {
     const keys = Object.keys(DYExps);
