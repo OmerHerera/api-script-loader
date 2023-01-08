@@ -98,83 +98,89 @@ function printDYObj(obj: any, DYExps: string, smartTagId: string) {
   }
 
 }
-test('DYExps vs DYExpsApi', async ({ page }) => {
-  const URL = process.env.URL || 'https://api-script-loader.vercel.app/';
-  const CDN = process.env.CDN || 'https://cdn-dev.dynamicyield.com/api-dev/'
-  const FILE_NAME = process.env.FILE_NAME || 'api_dynamic_full.js'
-  const siteId = process.env.SITE_ID || '';
-  const comparingKey = process.env.COMPARING_KEY || 'otags';
-  const smartTagId = process.env.SMART_TAG_ID || '';
-  const logSmartTagObject = process.env.LOG_SMART_TAG_OBJ || false;
 
-  if(!siteId) {
-    console.error(`⛔ ⛔ ⛔ No site ID, Do Nothing ⛔ ⛔ ⛔`);
-    return;
-  }
-  const apiAssemblyFilePath = `${CDN}${siteId}/${FILE_NAME}`
-  console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ');
-  console.log(`Running Test for SiteId: \x1B[36m${siteId}\x1b[0m in server: \x1B[36m${URL}\x1b[0m\nfile created by Api-Assembly: \x1B[36m${apiAssemblyFilePath}\x1b[0m and comparingKey: \x1B[36m${comparingKey}\x1b[0m`);
-  console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ');
-  await page.goto(URL);
-  page.on('console', msg => console.log(msg.text()));
-  await page.locator('[placeholder="Insert URL Api-Assembly Result"]').fill(apiAssemblyFilePath);
-  await page.locator('text=Click to load file').click();
-  // This is trick for waiting to th clone action
-  console.log('⏳ Waiting for cloning to be finish')
-  await page.locator('[placeholder="Cloned"]').fill('🧬');
+const siteIds = process.env.SITE_ID?.split(',') || [];
 
-  await page.locator('[placeholder="Insert SiteId"]').fill(siteId);
-  await page.locator('text=Click to load prod file').click();
-
-  await page.locator('select[name="dyObject"]').selectOption({ label: comparingKey });
-  //await page.locator('text=Run to Compare').click();
-
-  const DYExps:any = await page.evaluate('window.DYExps');
-  const DYExpsApi:any = await page.evaluate('window.DYExpsApi');
-
-  if (comparingKey === 'all') {
-    const keys = Object.keys(DYExps);
-    console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps).length}`);
-    for (let key of keys) {
-      console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
-      console.log(`🚀 Checking key: ${key}`);
-      // smartTags
-      if (key === 'otags') {
-        const otagsKeys = Object.keys(DYExps['otags']);
-        for (let cKey of otagsKeys) {
-          console.log(`🚀 Smart Tag key: ${cKey}`);
-          isDeepEqual(DYExps['otags'][cKey], DYExpsApi['otags'][cKey]);
-        }
-      } else {
-        isDeepEqual(DYExps[key], DYExpsApi[key]);
-      }
+siteIds.forEach(async (siteId) => {
+  test(`DYExps vs DYExpsApi SiteId#: ${siteId}`, async ({ page }) => {
+    const URL = process.env.URL || 'https://api-script-loader.vercel.app/';
+    const CDN = process.env.CDN || 'https://cdn-dev.dynamicyield.com/api-dev/'
+    const FILE_NAME = process.env.FILE_NAME || 'api_dynamic_full.js'
+    // const siteId = process.env.SITE_ID || '';
+    const comparingKey = process.env.COMPARING_KEY || 'otags';
+    const smartTagId = process.env.SMART_TAG_ID || '';
+    const logSmartTagObject = process.env.LOG_SMART_TAG_OBJ || false;
+  
+    if (!siteId) {
+      console.error(`⛔ ⛔ ⛔ No site ID, Do Nothing ⛔ ⛔ ⛔`);
+      return;
     }
-    console.log(`✅  Done Checking ${Object.keys(DYExps).length} keys`);
-  } else {
-    if(smartTagId) {
-      console.log(`🚧 Checking otags key with smartTagId: ${smartTagId}`);
-      if (DYExpsApi['otags'] && DYExpsApi['otags'][smartTagId]) {
-        isDeepEqual(DYExps['otags'][smartTagId], DYExpsApi['otags'][smartTagId]);
-        if(logSmartTagObject) {
-          printDYObj(DYExps['otags'][smartTagId], 'DYExps', smartTagId);
-          printDYObj(DYExpsApi['otags'][smartTagId], 'DYExpsApi', smartTagId);
-        }
-      } else {
-        console.log(`🔴 SmartTag: ${smartTagId}, doesn't  exist in DYExpsApi`);
-      }
-    } else {
-      console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps[comparingKey]).length}`);
-      const otherKeys = Object.keys(DYExps[comparingKey]);
-      for (let oKey of otherKeys) {
+    const apiAssemblyFilePath = `${CDN}${siteId}/${FILE_NAME}`
+    console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ');
+    console.log(`Running Test for SiteId: \x1B[36m${siteId}\x1b[0m in server: \x1B[36m${URL}\x1b[0m\nfile created by Api-Assembly: \x1B[36m${apiAssemblyFilePath}\x1b[0m and comparingKey: \x1B[36m${comparingKey}\x1b[0m`);
+    console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ');
+    await page.goto(URL);
+    page.on('console', msg => console.log(msg.text()));
+    await page.locator('[placeholder="Insert URL Api-Assembly Result"]').fill(apiAssemblyFilePath);
+    await page.locator('text=Click to load file').click();
+    // This is trick for waiting to th clone action
+    console.log('⏳ Waiting for cloning to be finish')
+    await page.locator('[placeholder="Cloned"]').fill('🧬');
+  
+    await page.locator('[placeholder="Insert SiteId"]').fill(siteId);
+    await page.locator('text=Click to load prod file').click();
+  
+    await page.locator('select[name="dyObject"]').selectOption({ label: comparingKey });
+    //await page.locator('text=Run to Compare').click();
+  
+    const DYExps: any = await page.evaluate('window.DYExps');
+    const DYExpsApi: any = await page.evaluate('window.DYExpsApi');
+  
+    if (comparingKey === 'all') {
+      const keys = Object.keys(DYExps);
+      console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps).length} Keys: ${Object.keys(DYExps)}`);
+      for (let key of keys) {
         console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
-        console.log(`🚀 Checking key: ${oKey}`);
-        if (DYExpsApi[comparingKey] && DYExpsApi[comparingKey][oKey]) {
-          isDeepEqual(DYExps[comparingKey][oKey], DYExpsApi[comparingKey][oKey]);
+        console.log(`🚀 Checking key: ${key}`);
+        // smartTags
+        if (key === 'otags') {
+          const otagsKeys = Object.keys(DYExps['otags']);
+          for (let cKey of otagsKeys) {
+            console.log(`🚀 Smart Tag key: ${cKey}`);
+            isDeepEqual(DYExps['otags'][cKey], DYExpsApi['otags'][cKey]);
+          }
         } else {
-          console.log(`🔴 Key: ${oKey}, doesn't  exist in DYExpsApi`);
+          isDeepEqual(DYExps[key], DYExpsApi[key]);
         }
       }
-      console.log(`✅  Done Checking ${Object.keys(DYExps[comparingKey]).length} keys`);
+      console.log(`✅ Done Checking ${Object.keys(DYExps).length} keys, for siteId: ${siteId}`);
+    } else {
+      if (smartTagId) {
+        console.log(`🚧 Checking otags key with smartTagId: ${smartTagId}`);
+        if (DYExpsApi['otags'] && DYExpsApi['otags'][smartTagId]) {
+          isDeepEqual(DYExps['otags'][smartTagId], DYExpsApi['otags'][smartTagId]);
+          if (logSmartTagObject) {
+            printDYObj(DYExps['otags'][smartTagId], 'DYExps', smartTagId);
+            printDYObj(DYExpsApi['otags'][smartTagId], 'DYExpsApi', smartTagId);
+          }
+          console.log(`✅  Done Checking otags key with smartTagId: ${smartTagId}`);
+        } else {
+          console.log(`🔴 SmartTag: ${smartTagId}, doesn't  exist in DYExpsApi`);
+        }
+      } else {
+        console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps[comparingKey]).length} SmartTags: ${Object.keys(DYExps[comparingKey])}`);
+        const otherKeys = Object.keys(DYExps[comparingKey]);
+        for (let oKey of otherKeys) {
+          console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
+          console.log(`🚀 Checking key: ${oKey}`);
+          if (DYExpsApi[comparingKey] && DYExpsApi[comparingKey][oKey]) {
+            isDeepEqual(DYExps[comparingKey][oKey], DYExpsApi[comparingKey][oKey]);
+          } else {
+            console.log(`🔴 Key: ${oKey}, doesn't  exist in DYExpsApi`);
+          }
+        }
+        console.log(`✅  Done Checking ${Object.keys(DYExps[comparingKey]).length} keys, for siteId: ${siteId}`);
+      }
     }
-  }
-});
+  });
+})
