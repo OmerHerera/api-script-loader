@@ -138,7 +138,7 @@ siteIds.forEach(async (siteId) => {
   
     if (comparingKey === 'all') {
       const keys = Object.keys(DYExps);
-      console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps).length}`);
+      console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps).length} Keys: ${Object.keys(DYExps)}`);
       for (let key of keys) {
         console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
         console.log(`🚀 Checking key: ${key}`);
@@ -153,7 +153,7 @@ siteIds.forEach(async (siteId) => {
           isDeepEqual(DYExps[key], DYExpsApi[key]);
         }
       }
-      console.log(`✅  Done Checking ${Object.keys(DYExps).length} keys`);
+      console.log(`✅ Done Checking ${Object.keys(DYExps).length} keys, for siteId: ${siteId}`);
     } else {
       if (smartTagId) {
         console.log(`🚧 Checking otags key with smartTagId: ${smartTagId}`);
@@ -163,11 +163,12 @@ siteIds.forEach(async (siteId) => {
             printDYObj(DYExps['otags'][smartTagId], 'DYExps', smartTagId);
             printDYObj(DYExpsApi['otags'][smartTagId], 'DYExpsApi', smartTagId);
           }
+          console.log(`✅  Done Checking otags key with smartTagId: ${smartTagId}`);
         } else {
           console.log(`🔴 SmartTag: ${smartTagId}, doesn't  exist in DYExpsApi`);
         }
       } else {
-        console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps[comparingKey]).length}`);
+        console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps[comparingKey]).length} SmartTags: ${Object.keys(DYExps[comparingKey])}`);
         const otherKeys = Object.keys(DYExps[comparingKey]);
         for (let oKey of otherKeys) {
           console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
@@ -178,7 +179,7 @@ siteIds.forEach(async (siteId) => {
             console.log(`🔴 Key: ${oKey}, doesn't  exist in DYExpsApi`);
           }
         }
-        console.log(`✅  Done Checking ${Object.keys(DYExps[comparingKey]).length} keys`);
+        console.log(`✅  Done Checking ${Object.keys(DYExps[comparingKey]).length} keys, for siteId: ${siteId}`);
       }
     }
   });

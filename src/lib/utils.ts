@@ -85,7 +85,7 @@ function cloneDYExps() {
   const el = document.getElementById('clone') as HTMLInputElement | null;
   // @ts-ignore: Object is possibly 'null'.
   el.style.display = ""
-  console.log('✅ Cloned to DYExpsApi Object');
+  console.log('🙌🏽 Cloned to DYExpsApi Object');
 }
 
 function runPopulateSelect() {
