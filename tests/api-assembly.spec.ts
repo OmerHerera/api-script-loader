@@ -101,7 +101,7 @@ function printDYObj(obj: any, DYExps: string, smartTagId: string) {
 
 }
 
-const sectionIds = process.env.SECTION_ID?.split(',') || [];
+const sectionIds = process.env.SECTION_ID?.replace(/\[/g, '')?.replace(/\]/g, '')?.split(',') || [];
 sectionIds.forEach(async (sectionId) => {
     test(`DYExps vs DYExpsApi SectionId#: ${sectionId}`, async ({ page }) => {
       const URL = process.env.URL || 'https://api-script-loader.vercel.app/';
