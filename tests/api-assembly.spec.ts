@@ -101,10 +101,9 @@ function printDYObj(obj: any, DYExps: string, smartTagId: string) {
 
 }
 
-const siteIds = process.env.SITE_ID?.split(',') || [];
-siteIds.forEach(async (siteId) => {
-  // test.describe(`DYExps vs DYExpsApi SiteId#: ${siteId}`, () => {
-    test(`DYExps vs DYExpsApi SiteId#: ${siteId}`, async ({ page }) => {
+const sectionIds = process.env.SECTION_ID?.split(',') || [];
+sectionIds.forEach(async (sectionId) => {
+    test(`DYExps vs DYExpsApi SectionId#: ${sectionId}`, async ({ page }) => {
       const URL = process.env.URL || 'https://api-script-loader.vercel.app/';
       const CDN = process.env.CDN || 'https://cdn-dev.dynamicyield.com/api-dev/'
       const FILE_NAME = process.env.FILE_NAME || 'api_dynamic_full.js'
@@ -112,13 +111,13 @@ siteIds.forEach(async (siteId) => {
       const smartTagId = process.env.SMART_TAG_ID || '';
       const logSmartTagObject = process.env.LOG_SMART_TAG_OBJ || false;
     
-      if (!siteId) {
-        console.error(`⛔ ⛔ ⛔ No site ID, Do Nothing ⛔ ⛔ ⛔`);
+      if (!sectionId) {
+        console.error(`⛔ ⛔ ⛔ No section ID, Do Nothing ⛔ ⛔ ⛔`);
         return;
       }
-      const apiAssemblyFilePath = `${CDN}${siteId}/${FILE_NAME}`
+      const apiAssemblyFilePath = `${CDN}${sectionId}/${FILE_NAME}`
       console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ');
-      console.log(`Running Test for SiteId: \x1B[36m${siteId}\x1b[0m in server: \x1B[36m${URL}\x1b[0m\nfile created by Api-Assembly: \x1B[36m${apiAssemblyFilePath}\x1b[0m and comparingKey: \x1B[36m${comparingKey}\x1b[0m`);
+      console.log(`Running Test for SectionId: \x1B[36m${sectionId}\x1b[0m in server: \x1B[36m${URL}\x1b[0m\nfile created by Api-Assembly: \x1B[36m${apiAssemblyFilePath}\x1b[0m and comparingKey: \x1B[36m${comparingKey}\x1b[0m`);
       console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ');
       await page.goto(URL);
       page.on('console', msg => console.log(msg.text()));
@@ -128,7 +127,7 @@ siteIds.forEach(async (siteId) => {
       console.log('⏳ Waiting for cloning to be finish')
       await page.locator('[placeholder="Cloned"]').fill('🧬');
     
-      await page.locator('[placeholder="Insert SiteId"]').fill(siteId);
+      await page.locator('[placeholder="Insert SectionId"]').fill(sectionId);
       await page.locator('text=Click to load prod file').click();
     
       await page.locator('select[name="dyObject"]').selectOption({ label: comparingKey });
@@ -154,7 +153,7 @@ siteIds.forEach(async (siteId) => {
             isDeepEqual(DYExps[key], DYExpsApi[key]);
           }
         }
-        console.log(`✅ Done Checking ${Object.keys(DYExps).length} keys, for siteId: ${siteId}`);
+        console.log(`✅ Done Checking ${Object.keys(DYExps).length} keys, for sectionId: ${sectionId}`);
       } else {
         if (smartTagId) {
           console.log(`🚧 Checking otags key with smartTagId: ${smartTagId}`);
@@ -180,7 +179,7 @@ siteIds.forEach(async (siteId) => {
               console.log(`🔴 Key: ${oKey}, doesn't  exist in DYExpsApi`);
             }
           }
-          console.log(`✅  Done Checking ${Object.keys(DYExps[comparingKey]).length} keys, for siteId: ${siteId}`);
+          console.log(`✅  Done Checking ${Object.keys(DYExps[comparingKey]).length} keys, for sectionId: ${sectionId}`);
         }
       }
     });

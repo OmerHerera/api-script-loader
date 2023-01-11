@@ -3,7 +3,7 @@ import cloneDeep from 'lodash.clonedeep';
 
 export const OPTIONS = {
   FULL_URL: 0,
-  PROD_SITE: 1
+  PROD_SECTION: 1
 };
 
 function getValue(id: string) {
@@ -159,7 +159,7 @@ export function starFlow(option: number, id: string, populate?: boolean) {
   const value = getValue(id);
   if(value) {
     switch (option) {
-      case OPTIONS.PROD_SITE:
+      case OPTIONS.PROD_SECTION:
         loadFile(`https://cdn.dynamicyield.com/api/${value}/api_dynamic.js`, populate);
         break;
       case OPTIONS.FULL_URL:
@@ -175,8 +175,8 @@ export function starFlow(option: number, id: string, populate?: boolean) {
 
 export function runFullFlow() {
   const pathFullFlow = getValue('pathFullFlow');
-  const siteIdFullFlow = pathFullFlow.split('_')[0]
-  const pathProductionFile = `https://cdn.dynamicyield.com/api/${siteIdFullFlow}/api_dynamic.js`
+  const sectionIdFullFlow = pathFullFlow.split('_')[0]
+  const pathProductionFile = `https://cdn.dynamicyield.com/api/${sectionIdFullFlow}/api_dynamic.js`
 
   const loadApiAssemblyFile = loadFilePromise(pathFullFlow);
   const loadProductionFile = loadFilePromise(pathProductionFile);
