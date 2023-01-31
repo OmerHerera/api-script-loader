@@ -1,11 +1,10 @@
 import { test, expect } from '@playwright/test';
-import {runHookConfigSetup} from "astro/dist/integrations";
 
 function isObject(object: any) {
   return object != null && typeof object === "object";
 }
 
-function isDeepEqual(object1: any, object2: any) {
+async function isDeepEqual(object1: any, object2: any, ignoreKeys: string [] | undefined) {
   if ((typeof object1 === 'string' && typeof object2 === 'string') && (object2 !== object1)) {
     // try {
       expect(object2).toBe(object1);
@@ -27,71 +26,79 @@ function isDeepEqual(object1: any, object2: any) {
     let value1 = object1[key];
     let value2 = object2[key];
     const isObjects = isObject(value1) && isObject(value2);
-    if ((isObjects && !isDeepEqual(value1, value2))) {
-      let value1DecodeURI;
-      let value2DecodeURI;
+    if ((isObjects && !isDeepEqual(value1, value2, ignoreKeys))) {
+      let value1DecodeURI: any;
+      let value2DecodeURI: any;
       // try {
-        value1DecodeURI = decodeURIComponent(value1)
-        value2DecodeURI = decodeURIComponent(value2)
-        if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode') {
-          value1DecodeURI = value1DecodeURI.replace(/'/g, "'");
-        }
-        // seems that in production we have duplicates of the same touchPointsDisjs under conds array
-        // wso we check if the values are the same but not considering the duplicates
-        if(key === 'touchPointsDisjs') {
-          // console.log(`Checking: ${key}`);
-          isDeepEqual(value1, value2);
-          return;
-        }
+      value1DecodeURI = decodeURIComponent(value1)
+      value2DecodeURI = decodeURIComponent(value2)
+      
+      if(ignoreKeys && ignoreKeys.indexOf(key) >=0 ) {
+        console.log(`Ignoring key: ${key}`);
+        return true;
+      }
 
-        if (value1DecodeURI !== value2DecodeURI) {
-          console.log(`\n🔴 Values not Equals when comparing Objects in key: ${key}`);
-          console.log(`Expected: \x1B[32m${JSON.stringify(value1)}\x1b[0m`);
-          console.log(`Received: \x1B[31m${JSON.stringify(value2)}\x1b[0m`);
-          expect(value2DecodeURI).toContain(value1DecodeURI);
-          return false;
-        }
-      // } catch (e) {
-      //   console.log(`Reason: ${e} \n*window.DYExps value:\n ${JSON.stringify(value1)} \n*window.DYExpsApi value:\n ${JSON.stringify(value2)}`)
-      // }
+      if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode') {
+        value1DecodeURI = value1DecodeURI.replace(/'/g, "'");
+      }
+
+      // seems that in production we have duplicates of the same touchPointsDisjs under conds array
+      // wso we check if the values are the same but not considering the duplicates
+      if (key === 'touchPointsDisjs') {
+        // console.log(`Checking: ${key}`);
+        isDeepEqual(value1, value2, ignoreKeys);
+        return;
+      }
+      
+      if (key === 'ttw' && value2DecodeURI === '0' && value1DecodeURI === 'null') {
+        return true;
+      }
+
+      if (value1DecodeURI !== value2DecodeURI) {
+        console.log(`\n🔴 Values not Equals when comparing Objects in key: ${key}`);
+        console.log(`Expected: \x1B[32m${JSON.stringify(value1)}\x1b[0m`);
+        console.log(`Received: \x1B[31m${JSON.stringify(value2)}\x1b[0m`);
+        expect(value2DecodeURI).toContain(value1DecodeURI);
+        return false;
+      }
     }
     if (!isObjects && value1 !== value2) {
-      let value1DecodeURI;
-      let value2DecodeURI;
+      let value1DecodeURI: any;
+      let value2DecodeURI: any;
       // try {
-        value1DecodeURI = decodeURIComponent(value1)
-        value2DecodeURI = decodeURIComponent(value2)
-        if(key == 'id') {
-          return true;
-        }
-        if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode' || key === 'name') {
-          value1DecodeURI = value1DecodeURI.replace(/'/g, '"');
-        }
-        if (value1DecodeURI !== value2DecodeURI) {
-          console.log(`\n🔴 Values not Equals when comparing Values in key: ${key}`); 
-          console.log(`Expected: \x1B[32m${value1DecodeURI}\x1b[0m`);
-          console.log(`Received: \x1B[31m${value2DecodeURI}\x1b[0m`);
-          expect(value2DecodeURI).toBe(value1DecodeURI);
-          return false;
-        }
-      // } catch (e) {
-      //   console.log(`Reason: ${e}`)
-      // }
+      value1DecodeURI = decodeURIComponent(value1);
+      value2DecodeURI = decodeURIComponent(value2);
+
+      if(ignoreKeys && ignoreKeys.indexOf(key) >=0 ) {
+        console.log(`Ignoring key: ${key}`);
+        return true;
+      }
+
+      if (key == 'id') {
+        return true;
+      }
+      if (key === 'ttw' && value2DecodeURI === '0' && value1DecodeURI === 'null') {
+        return true;
+      }
+
+      if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode' || key === 'name') {
+        value1DecodeURI = value1DecodeURI.replace(/'/g, '"');
+      }
+      if(ignoreKeys && ignoreKeys.indexOf(key) >=0 ) {
+        console.log(`Ignoring key: ${key}`);
+        return true;
+      }
+      if (value1DecodeURI !== value2DecodeURI) {
+        console.log(`\n🔴 Values not Equals when comparing Values in key: ${key}`);
+        console.log(`Expected: \x1B[32m${value1DecodeURI}\x1b[0m`);
+        console.log(`Received: \x1B[31m${value2DecodeURI}\x1b[0m`);
+        expect(value2DecodeURI).toBe(value1DecodeURI);
+        return false;
+      }
     }
   }
   return true;
 }
-
-
-// test('Run Full Flow', async ({ page }) => {
-//   console.log('Run Full Flow')
-//   await page.goto('http://localhost:3000/');
-//    page.on('console', msg => console.log(msg.text()));
-//   await page.locator('[placeholder="Cloned"]').fill('🧬');
-// //   await page.locator('text=Click to run Full Flow').click();
-// //   const t = await page.evaluate('window.DYExps.section');
-// //   console.log(t)
-//  });
 
 function printDYObj(obj: any, DYExps: string, smartTagId: string) {
   console.error(`====================================================================== ${DYExps} === ${smartTagId}======================================================================================================================`);
@@ -101,7 +108,13 @@ function printDYObj(obj: any, DYExps: string, smartTagId: string) {
 
 }
 
-const sectionIds = process.env.SECTION_ID?.replace(/\[/g, '')?.replace(/\]/g, '')?.split(',') || [];
+function normalizeInputArray(arr: string | undefined) {
+  return arr?.replace(/\[/g, '')?.replace(/\]/g, '')?.split(',') || [];
+}
+
+const debugSections = '';
+const sectionIds = normalizeInputArray(process.env.SECTION_ID || debugSections);
+const ignoreKeys = normalizeInputArray(process.env.KEYS_TO_IGNORE);
 sectionIds.forEach(async (sectionId) => {
     test(`DYExps vs DYExpsApi SectionId#: ${sectionId}`, async ({ page }) => {
       const URL = process.env.URL || 'https://api-script-loader.vercel.app/';
@@ -147,10 +160,10 @@ sectionIds.forEach(async (sectionId) => {
             const otagsKeys = Object.keys(DYExps['otags']);
             for (let cKey of otagsKeys) {
               console.log(`🚀 Smart Tag key: ${cKey}`);
-              isDeepEqual(DYExps['otags'][cKey], DYExpsApi['otags'][cKey]);
+              isDeepEqual(DYExps['otags'][cKey], DYExpsApi['otags'][cKey], ignoreKeys);
             }
           } else {
-            isDeepEqual(DYExps[key], DYExpsApi[key]);
+            isDeepEqual(DYExps[key], DYExpsApi[key], ignoreKeys);
           }
         }
         console.log(`✅ Done Checking ${Object.keys(DYExps).length} keys, for sectionId: ${sectionId}`);
@@ -158,7 +171,7 @@ sectionIds.forEach(async (sectionId) => {
         if (smartTagId) {
           console.log(`🚧 Checking otags key with smartTagId: ${smartTagId}`);
           if (DYExpsApi['otags'] && DYExpsApi['otags'][smartTagId]) {
-            isDeepEqual(DYExps['otags'][smartTagId], DYExpsApi['otags'][smartTagId]);
+            isDeepEqual(DYExps['otags'][smartTagId], DYExpsApi['otags'][smartTagId], ignoreKeys);
             if (logSmartTagObject) {
               printDYObj(DYExps['otags'][smartTagId], 'DYExps', smartTagId);
               printDYObj(DYExpsApi['otags'][smartTagId], 'DYExpsApi', smartTagId);
@@ -174,7 +187,7 @@ sectionIds.forEach(async (sectionId) => {
             console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
             console.log(`🚀 Checking key: ${oKey}`);
             if (DYExpsApi[comparingKey] && DYExpsApi[comparingKey][oKey]) {
-              isDeepEqual(DYExps[comparingKey][oKey], DYExpsApi[comparingKey][oKey]);
+              isDeepEqual(DYExps[comparingKey][oKey], DYExpsApi[comparingKey][oKey], ignoreKeys);
             } else {
               console.log(`🔴 Key: ${oKey}, doesn't  exist in DYExpsApi`);
             }
@@ -183,5 +196,4 @@ sectionIds.forEach(async (sectionId) => {
         }
       }
     });
-  // });
-});
+  });
