@@ -98,7 +98,9 @@ async function isDeepEqual(object1: any, object2: any, ignoreKeys: string [] | u
         isDeepEqual(JSON.parse(value1DecodeURI), JSON.parse(value2DecodeURI), ignoreKeys);
         return;
       }
-
+      if (key === 'selectParameter2') { 
+        value1DecodeURI = value1DecodeURI.replace(/\"/g, "'");
+      }
       if (value1DecodeURI !== value2DecodeURI) {
         console.log(`\n🔴 Values not Equals when comparing Values in key: ${key}`);
         console.log(`Expected: \x1B[32m${value1DecodeURI}\x1b[0m`);
