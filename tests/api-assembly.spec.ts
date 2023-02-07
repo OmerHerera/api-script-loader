@@ -94,8 +94,12 @@ async function isDeepEqual(object1: any, object2: any, ignoreKeys: string [] | u
       if (key === 'data_event_name' && (value1DecodeURI === 'null' && value2DecodeURI === '')) {
         return true;
       }
-      if(key === 'params') {
-        isDeepEqual(JSON.parse(value1DecodeURI), JSON.parse(value2DecodeURI), ignoreKeys);
+      if (key === 'params' && value1DecodeURI && value2DecodeURI) {
+        try {
+          isDeepEqual(JSON.parse(value1DecodeURI), JSON.parse(value2DecodeURI), ignoreKeys);
+        } catch (e) {
+          return;
+        }
         return;
       }
       if (key === 'selectParameter2') { 
