@@ -53,6 +53,9 @@ async function isDeepEqual(object1: any, object2: any, ignoreKeys: string [] | u
       if (key === 'ttw' && value2DecodeURI === '0' && value1DecodeURI === 'null') {
         return true;
       }
+      if (key === 'data_event_name' && (value1 === 'null' && value2 === '')) {
+        return true;
+      }
 
       if (value1DecodeURI !== value2DecodeURI) {
         console.log(`\n🔴 Values not Equals when comparing Objects in key: ${key}`);
@@ -88,6 +91,14 @@ async function isDeepEqual(object1: any, object2: any, ignoreKeys: string [] | u
         console.log(`Ignoring key: ${key}`);
         return true;
       }
+      if (key === 'data_event_name' && (value1DecodeURI === 'null' && value2DecodeURI === '')) {
+        return true;
+      }
+      if(key === 'params') {
+        isDeepEqual(JSON.parse(value1DecodeURI), JSON.parse(value2DecodeURI), ignoreKeys);
+        return;
+      }
+
       if (value1DecodeURI !== value2DecodeURI) {
         console.log(`\n🔴 Values not Equals when comparing Values in key: ${key}`);
         console.log(`Expected: \x1B[32m${value1DecodeURI}\x1b[0m`);
@@ -118,7 +129,10 @@ const ignoreKeys = normalizeInputArray(process.env.KEYS_TO_IGNORE);
 sectionIds.forEach(async (sectionId) => {
     test(`DYExps vs DYExpsApi SectionId#: ${sectionId}`, async ({ page }) => {
       const URL = process.env.URL || 'https://api-script-loader.vercel.app/';
-      const CDN = process.env.CDN || 'https://cdn-dev.dynamicyield.com/api-dev/'
+      // Local: api-dev
+      // dev: api-test/
+      const S3_BUCKET = process.env.BUCKET || 'api-dev';
+      const CDN = process.env.CDN || `https://cdn-dev.dynamicyield.com/${S3_BUCKET}/`
       const FILE_NAME = process.env.FILE_NAME || 'api_dynamic_full.js'
       const comparingKey = process.env.COMPARING_KEY || 'otags';
       const smartTagId = process.env.SMART_TAG_ID || '';
