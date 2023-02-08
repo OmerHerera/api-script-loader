@@ -209,7 +209,7 @@ sectionIds.forEach(async (sectionId) => {
             if (DYExpsApi[comparingKey] && DYExpsApi[comparingKey][oKey]) {
               isDeepEqual(DYExps[comparingKey][oKey], DYExpsApi[comparingKey][oKey], ignoreKeys);
             } else {
-              console.log(`🔴 Key: ${oKey}, doesn't  exist in DYExpsApi`);
+              console.log(`🔴 Section: ${sectionId} Key: ${oKey}, doesn't  exist in DYExpsApi`);
             }
           }
           console.log(`✅  Done Checking ${Object.keys(DYExps[comparingKey]).length} keys, for sectionId: ${sectionId}`);
