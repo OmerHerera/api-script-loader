@@ -198,10 +198,10 @@ sectionIds.forEach(async (sectionId) => {
             }
             console.log(`✅  Done Checking otags key with smartTagId: ${smartTagId}`);
           } else {
-            console.log(`🔴 SmartTag: ${smartTagId}, doesn't  exist in DYExpsApi`);
+            console.log(`🔴 Section: ${sectionId} SmartTag: ${smartTagId}, doesn't  exist in DYExpsApi`);
           }
         } else {
-          console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps[comparingKey]).length} SmartTags: ${Object.keys(DYExps[comparingKey])}`);
+          console.log(`🚧 Checking ${comparingKey} key with length: ${Object.keys(DYExps[comparingKey]).length} ${comparingKey}: ${Object.keys(DYExps[comparingKey])}`);
           const otherKeys = Object.keys(DYExps[comparingKey]);
           for (let oKey of otherKeys) {
             console.log(`⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞⚞`);
