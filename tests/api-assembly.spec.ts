@@ -38,10 +38,6 @@ async function isDeepEqual(object1: any, object2: any, ignoreKeys: string [] | u
         return true;
       }
 
-      if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode') {
-        value1DecodeURI = value1DecodeURI.replace(/'/g, "'");
-      }
-
       // seems that in production we have duplicates of the same touchPointsDisjs under conds array
       // wso we check if the values are the same but not considering the duplicates
       if (key === 'touchPointsDisjs') {
@@ -84,7 +80,7 @@ async function isDeepEqual(object1: any, object2: any, ignoreKeys: string [] | u
         return true;
       }
 
-      if (key === 'cssCode' || key === 'jsCode' || key === 'htmlCode' || key === 'name') {
+      if (key === 'name') {
         value1DecodeURI = value1DecodeURI.replace(/'/g, '"');
       }
       if(ignoreKeys && ignoreKeys.indexOf(key) >=0 ) {
@@ -101,9 +97,6 @@ async function isDeepEqual(object1: any, object2: any, ignoreKeys: string [] | u
           return;
         }
         return;
-      }
-      if (key === 'selectParameter2') { 
-        value1DecodeURI = value1DecodeURI.replace(/\"/g, "'");
       }
       if (value1DecodeURI !== value2DecodeURI) {
         console.log(`\n🔴 Values not Equals when comparing Values in key: ${key}`);
@@ -134,7 +127,7 @@ const sectionIds = normalizeInputArray(process.env.SECTION_ID || debugSections);
 const ignoreKeys = normalizeInputArray(process.env.KEYS_TO_IGNORE);
 sectionIds.forEach(async (sectionId) => {
     test(`DYExps vs DYExpsApi SectionId#: ${sectionId}`, async ({ page }) => {
-      const URL = process.env.URL || 'https://api-script-loader.vercel.app/';
+      const URL = 'http://localhost:3000/' || 'https://api-script-loader.vercel.app/';
       // Local: api-dev
       // dev: api-test/
       const S3_BUCKET = process.env.BUCKET || 'api-dev';
@@ -143,6 +136,7 @@ sectionIds.forEach(async (sectionId) => {
       const comparingKey = process.env.COMPARING_KEY || 'otags';
       const smartTagId = process.env.SMART_TAG_ID || '';
       const logSmartTagObject = process.env.LOG_SMART_TAG_OBJ || false;
+      const region = process.env.REGION || 'us';
     
       if (!sectionId) {
         console.error(`⛔ ⛔ ⛔ No section ID, Do Nothing ⛔ ⛔ ⛔`);
@@ -156,15 +150,14 @@ sectionIds.forEach(async (sectionId) => {
       page.on('console', msg => console.log(msg.text()));
       await page.locator('[placeholder="Insert URL Api-Assembly Result"]').fill(apiAssemblyFilePath);
       await page.locator('text=Click to load file').click();
-      // This is trick for waiting to th clone action
+      // This is trick for waiting to the clone action
       console.log('⏳ Waiting for cloning to be finish')
       await page.locator('[placeholder="Cloned"]').fill('🧬');
     
       await page.locator('[placeholder="Insert SectionId"]').fill(sectionId);
+      await page.locator('select[name="dyRegion"]').selectOption({ label: region });
       await page.locator('text=Click to load prod file').click();
-    
       await page.locator('select[name="dyObject"]').selectOption({ label: comparingKey });
-      //await page.locator('text=Run to Compare').click();
     
       const DYExps: any = await page.evaluate('window.DYExps');
       const DYExpsApi: any = await page.evaluate('window.DYExpsApi');

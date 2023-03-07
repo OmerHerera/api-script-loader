@@ -157,10 +157,14 @@ export function runCompare() {
 
 export function starFlow(option: number, id: string, populate?: boolean) {
   const value = getValue(id);
+  const select = document.getElementById('dyRegion') as HTMLSelectElement | null;
+  let region = select?.options[select.selectedIndex || 0].text;
+  console.log(`🗺️  Region: ${region}`);
   if(value) {
     switch (option) {
       case OPTIONS.PROD_SECTION:
-        loadFile(`https://cdn.dynamicyield.com/api/${value}/api_dynamic.js`, populate);
+        const regionPath = region == 'eu' ? 'https://cdn-eu.dynamicyield.com' : 'https://cdn.dynamicyield.com';
+        loadFile(`${regionPath}/api/${value}/api_dynamic.js`, populate);
         break;
       case OPTIONS.FULL_URL:
         loadFile(value);
