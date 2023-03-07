@@ -127,7 +127,7 @@ const sectionIds = normalizeInputArray(process.env.SECTION_ID || debugSections);
 const ignoreKeys = normalizeInputArray(process.env.KEYS_TO_IGNORE);
 sectionIds.forEach(async (sectionId) => {
     test(`DYExps vs DYExpsApi SectionId#: ${sectionId}`, async ({ page }) => {
-      const URL = 'http://localhost:3000/' || 'https://api-script-loader.vercel.app/';
+      const URL = process.env.URL || 'https://api-script-loader.vercel.app/';
       // Local: api-dev
       // dev: api-test/
       const S3_BUCKET = process.env.BUCKET || 'api-dev';
